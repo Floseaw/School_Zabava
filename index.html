@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ИИ-Предсказатель Оценок v7.2</title>
+<meta name="theme-color" content="#050510">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg0: #050510;
+    --bg1: #0a0a1f;
+    --bg2: #12122e;
+    --accent1: #00f2fe;
+    --accent2: #7b2ff7;
+    --accent3: #4facfe;
+    --g5: #00ff88;
+    --g4: #ffd93d;
+    --g3: #ff9f43;
+    --g2: #ff4757;
+    --text: #ffffff;
+    --text-dim: #8b8b9e;
+    --card-bg: rgba(18, 18, 46, 0.7);
+    --card-border: rgba(123, 47, 247, 0.25);
+    --input-bg: rgba(5, 5, 16, 0.7);
+    --result-bg: rgba(5, 5, 16, 0.8);
+    --glow: 0 0 30px rgba(123, 47, 247, 0.4);
+  }
+
+  body.light {
+    --bg0: #f0f4ff;
+    --bg1: #e0e7ff;
+    --bg2: #c7d2fe;
+    --text: #1a1a2e;
+    --text-dim: #555;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-border: rgba(37, 99, 235, 0.25);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --result-bg: rgba(255, 255, 255, 0.95);
+    --accent1: #06b6d4;
+    --accent2: #2563eb;
+    --accent3: #2563eb;
+    --glow: 0 0 30px rgba(37, 99, 235, 0.25);
+  }
+
+  html, body { height: 100%; overscroll-behavior-y: none; }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg1) 40%, var(--bg0) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 16px;
+    color: var(--text);
+    transition: background 0.6s ease, color 0.3s ease;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 20% 20%, rgba(123, 47, 247, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 242, 254, 0.1) 0%, transparent 40%);
+    animation: bgMove 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes bgMove {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-5%, -5%) rotate(5deg); }
+  }
+
+  body.bg-5 { background: radial-gradient(ellipse at top, #004d28 0%, #003d1f 40%, #001a0d 100%); }
+  body.bg-4 { background: radial-gradient(ellipse at top, #4d4400 0%, #3d3500 40%, #1a1600 100%); }
+  body.bg-3 { background: radial-gradient(ellipse at top, #4d2a00 0%, #3d2200 40%, #1a0e00 100%); }
+  body.bg-2 { background: radial-gradient(ellipse at top, #4d0000 0%, #3d0000 40%, #1a0000 100%); }
+
+  @keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-8px, -4px); }
+    20% { transform: translate(7px, 5px); }
+    30% { transform: translate(-6px, 3px); }
+    40% { transform: translate(6px, -5px); }
+    50% { transform: translate(-7px, 4px); }
+    60% { transform: translate(4px, -3px); }
+    70% { transform: translate(-4px, 5px); }
+    80% { transform: translate(5px, -4px); }
+    90% { transform: translate(-3px, 3px); }
+  }
+
+  body.shake { animation: shake 0.6s; }
+
+  .confetti {
+    position: fixed;
+    top: -20px;
+    font-size: 24px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .app { max-width: 640px; width: 100%; padding-bottom: 30px; position: relative; z-index: 1; }
+
+  .card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 28px 22px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    text-align: center;
+    margin-bottom: 16px;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan { to { left: 100%; } }
+
+  h1 {
+    font-size: 26px;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent1));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    line-height: 1.2;
+    animation: shimmer 4s linear infinite;
+    letter-spacing: -0.5px;
+  }
+
+  @keyframes shimmer { to { background-position: 200% center; } }
+
+  .subtitle { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.5px; }
+
+  .meme-line {
+    font-size: 11px;
+    color: #ffd93d;
+    font-style: italic;
+    margin-bottom: 20px;
+    min-height: 16px;
+    transition: 0.3s;
+    text-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
+  }
+
+  body.light .meme-line { color: #b45309; text-shadow: none; }
+
+  label {
+    display: block;
+    text-align: left;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: var(--input-bg);
+    color: var(--text);
+    font-size: 16px;
+    outline: none;
+    transition: 0.25s;
+    margin-bottom: 14px;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+    font-weight: 500;
+  }
+
+  input::placeholder { color: var(--text-dim); opacity: 0.6; }
+
+  select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%237b2ff7' d='M6 9L1 4h10z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+
+  body.light select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%232563eb' d='M6 9L1 4h10z'/></svg>");
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(123, 47, 247, 0.2), var(--glow);
+  }
+
+  select option { background: #12122e; color: #fff; }
+  body.light select option { background: #fff; color: #000; }
+
+  button {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 12px;
+    font-family: inherit;
+    letter-spacing: 1px;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+  }
+
+  button:hover::before { left: 100%; }
+
+  button:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px rgba(123, 47, 247, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: rgba(123, 47, 247, 0.12);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    font-size: 13px;
+    padding: 13px 10px;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    box-shadow: none;
+  }
+
+  .btn-secondary:active:not(:disabled) {
+    background: rgba(123, 47, 247, 0.25);
+    transform: scale(0.97);
+    box-shadow: none;
+  }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-row button { margin-bottom: 12px; flex: 1; min-width: 130px; }
+
+  .result {
+    margin-top: 18px;
+    padding: 22px 18px;
+    border-radius: 18px;
+    background: var(--result-bg);
+    border: 1px solid var(--accent2);
+    min-height: 130px;
+    font-size: 15px;
+    line-height: 1.6;
+    text-align: left;
+    display: none;
+    box-shadow: var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .result.show { display: block; animation: fadeIn 0.45s ease-out; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .result-name { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
+  .result-name b { color: var(--accent1); }
+  .result-subject { font-size: 14px; color: var(--text-dim); margin-bottom: 8px; }
+  .result-subject b { color: var(--text); }
+
+  .grade-wrap { text-align: center; margin: 12px 0; }
+
+  .emoji-face {
+    font-size: 44px;
+    display: block;
+    margin-bottom: 4px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 0 15px currentColor);
+  }
+
+  .grade {
+    display: inline-block;
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    padding: 10px 28px;
+    border-radius: 18px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    letter-spacing: -2px;
+  }
+
+  @keyframes popIn {
+    0%   { transform: scale(0.3); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  .grade.g5 { color: var(--g5); text-shadow: 0 0 30px var(--g5), 0 0 60px var(--g5); }
+  .grade.g4 { color: var(--g4); text-shadow: 0 0 30px var(--g4), 0 0 60px var(--g4); }
+  .grade.g3 { color: var(--g3); text-shadow: 0 0 30px var(--g3), 0 0 60px var(--g3); }
+  .grade.g2 { color: var(--g2); text-shadow: 0 0 30px var(--g2), 0 0 60px var(--g2); }
+
+  .result-comment {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(123, 47, 247, 0.15);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 12px 0;
+    display: none;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .progress-bar.show { display: block; }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent1));
+    background-size: 200% auto;
+    transition: width 0.3s ease;
+    border-radius: 5px;
+    animation: shimmer 2s linear infinite;
+    box-shadow: 0 0 15px var(--accent2);
+  }
+
+  .loader {
+    font-size: 12px;
+    color: var(--accent1);
+    margin-top: 8px;
+    min-height: 18px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  .panel {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 16px;
+    display: none;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  }
+
+  .panel.show { display: block; animation: fadeIn 0.4s; }
+
+  .panel h3 {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+  }
+
+  .history-list { list-style: none; max-height: 240px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  .history-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 5px;
+    background: rgba(123, 47, 247, 0.08);
+    border: 1px solid rgba(123, 47, 247, 0.1);
+    gap: 8px;
+    transition: 0.2s;
+  }
+
+  .history-list li:hover { background: rgba(123, 47, 247, 0.15); }
+
+  .history-list li span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .history-list li span.g {
+    font-weight: 900;
+    font-size: 16px;
+    padding: 2px 12px;
+    border-radius: 8px;
+    min-width: 38px;
+    text-align: center;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .history-list li span.g5 { color: var(--g5); text-shadow: 0 0 10px var(--g5); }
+  .history-list li span.g4 { color: var(--g4); text-shadow: 0 0 10px var(--g4); }
+  .history-list li span.g3 { color: var(--g3); text-shadow: 0 0 10px var(--g3); }
+  .history-list li span.g2 { color: var(--g2); text-shadow: 0 0 10px var(--g2); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+
+  .stat {
+    background: rgba(123, 47, 247, 0.08);
+    border: 1px solid rgba(123, 47, 247, 0.15);
+    border-radius: 12px;
+    padding: 12px 6px;
+    text-align: center;
+    transition: 0.2s;
+  }
+
+  .stat:hover { transform: translateY(-2px); }
+
+  .stat .num { font-size: 20px; font-weight: 900; display: block; letter-spacing: -1px; }
+
+  .stat .lbl {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  .stat.s5 .num { color: var(--g5); text-shadow: 0 0 12px var(--g5); }
+  .stat.s4 .num { color: var(--g4); text-shadow: 0 0 12px var(--g4); }
+  .stat.s3 .num { color: var(--g3); text-shadow: 0 0 12px var(--g3); }
+  .stat.s2 .num { color: var(--g2); text-shadow: 0 0 12px var(--g2); }
+
+  .footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+    padding: 0 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .footer small { font-size: 9px; }
+
+  .top-controls { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+
+  .icon-btn {
+    background: rgba(123, 47, 247, 0.1);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: 0.2s;
+    width: auto;
+    margin: 0;
+    font-weight: 600;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: none;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .icon-btn::before { display: none; }
+
+  .icon-btn:active { background: rgba(123, 47, 247, 0.25); transform: scale(0.95); }
+
+  .rating-list { list-style: none; }
+  .rating-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 5px;
+    background: rgba(123, 47, 247, 0.08);
+    border: 1px solid rgba(123, 47, 247, 0.1);
+    gap: 8px;
+  }
+  .rating-list li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rating-list li .avg {
+    font-weight: 900;
+    padding: 3px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .rating-list li .avg.high { color: var(--g5); text-shadow: 0 0 10px var(--g5); }
+  .rating-list li .avg.mid  { color: var(--g4); text-shadow: 0 0 10px var(--g4); }
+  .rating-list li .avg.low  { color: var(--g3); text-shadow: 0 0 10px var(--g3); }
+  .rating-list li .avg.bad  { color: var(--g2); text-shadow: 0 0 10px var(--g2); }
+
+  .ach-grid { display: flex; flex-direction: column; gap: 8px; }
+
+  .ach {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(123, 47, 247, 0.04);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    text-align: left;
+    transition: 0.3s;
+    filter: blur(3px);
+    opacity: 0.55;
+    position: relative;
+    cursor: not-allowed;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .ach::after {
+    content: '🔒';
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    opacity: 0.7;
+    filter: blur(0);
+  }
+
+  .ach.unlocked {
+    filter: blur(0);
+    opacity: 1;
+    cursor: default;
+    background: linear-gradient(135deg, rgba(123, 47, 247, 0.25), rgba(0, 242, 254, 0.15));
+    border-color: var(--accent2);
+    box-shadow: 0 0 20px rgba(123, 47, 247, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .ach.unlocked::after {
+    content: '✓';
+    color: var(--g5);
+    font-size: 20px;
+    opacity: 1;
+    text-shadow: 0 0 10px var(--g5);
+  }
+
+  .ach .ach-icon { font-size: 26px; flex-shrink: 0; filter: drop-shadow(0 0 8px currentColor); }
+  .ach .ach-name { font-weight: 800; color: var(--text); font-size: 14px; }
+  .ach .ach-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  .toast {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #4c1d95, #7b2ff7, #00f2fe);
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 15px 50px rgba(123, 47, 247, 0.5);
+    font-size: 14px;
+    font-weight: 700;
+    z-index: 2000;
+    transform: translateY(-200%);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .toast.show { transform: translateY(0); }
+  .toast .toast-icon { font-size: 26px; margin-right: 10px; }
+  .toast small { display: block; font-size: 11px; font-weight: 400; opacity: 0.9; margin-top: 4px; }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .modal.show { display: flex; }
+
+  .modal-content {
+    background: linear-gradient(135deg, var(--bg2), var(--bg1));
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px 22px;
+    max-width: 420px;
+    width: 100%;
+    color: var(--text);
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), var(--glow);
+  }
+
+  body.light .modal-content { background: #f1f5f9; }
+
+  .modal-content h2 { font-size: 18px; margin-bottom: 14px; color: var(--accent1); }
+  .modal-content label { margin-top: 8px; }
+  .modal-content button { margin-top: 8px; }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: rgba(123, 47, 247, 0.1); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: rgba(123, 47, 247, 0.4); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(123, 47, 247, 0.6); }
+
+  @media (max-width: 480px) {
+    body { padding: 10px; }
+    .card { padding: 22px 16px; border-radius: 20px; }
+    h1 { font-size: 22px; }
+    .subtitle { font-size: 11px; }
+    .meme-line { font-size: 10px; margin-bottom: 14px; }
+    input, select { padding: 13px 14px; font-size: 16px; margin-bottom: 12px; }
+    button { padding: 15px; font-size: 15px; margin-bottom: 10px; }
+    .btn-secondary { font-size: 13px; padding: 12px 8px; }
+    .btn-row { gap: 6px; }
+    .btn-row button { min-width: 100px; }
+    .grade { font-size: 52px; padding: 6px 22px; }
+    .emoji-face { font-size: 36px; }
+    .panel { padding: 14px; border-radius: 16px; }
+    .panel h3 { font-size: 11px; }
+    .stat .num { font-size: 18px; }
+    .stat .lbl { font-size: 8px; }
+    .ach { padding: 10px 12px; gap: 10px; }
+    .ach .ach-icon { font-size: 22px; }
+    .ach .ach-name { font-size: 13px; }
+    .ach .ach-desc { font-size: 10px; }
+    .ach::after { font-size: 16px; right: 10px; }
+    .ach.unlocked::after { font-size: 18px; }
+    .icon-btn { padding: 7px 10px; font-size: 10px; }
+    .top-controls { gap: 4px; }
+    .history-list li { font-size: 12px; padding: 8px 10px; }
+    .rating-list li { font-size: 12px; padding: 8px 10px; }
+    .modal-content { padding: 20px 16px; }
+    .modal-content h2 { font-size: 16px; }
+  }
+
+  @media (max-width: 360px) {
+    h1 { font-size: 19px; }
+    .grade { font-size: 44px; padding: 5px 18px; }
+    .emoji-face { font-size: 32px; }
+    .icon-btn { font-size: 9px; padding: 6px 8px; }
+    .btn-secondary { font-size: 12px; padding: 11px 6px; }
+  }
+
+  @media (min-width: 768px) {
+    body { padding: 24px; }
+    .card { padding: 36px 32px; }
+    h1 { font-size: 30px; }
+    .btn-row button { min-width: 150px; }
+  }
+
+  @media (hover: none) {
+    button:hover:not(:disabled) { transform: none; }
+    button:hover::before { left: -100%; }
+    .icon-btn:hover { background: rgba(123, 47, 247, 0.1); }
+    .btn-secondary:hover:not(:disabled) { background: rgba(123, 47, 247, 0.12); }
+    .history-list li:hover { background: rgba(123, 47, 247, 0.08); }
+    .stat:hover { transform: none; }
+  }
+
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      padding-left: calc(16px + env(safe-area-inset-left));
+      padding-right: calc(16px + env(safe-area-inset-right));
+    }
+    .toast { top: calc(12px + env(safe-area-inset-top)); }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="card">
+    <div class="top-controls">
+      <button class="icon-btn" id="themeBtn">🌙 Тема</button>
+      <button class="icon-btn" id="soundBtn">🔇 Звук</button>
+      <button class="icon-btn" id="teacherBtn">👨‍🏫 Учитель</button>
+      <button class="icon-btn" id="achBtn">🏆 Ачивки</button>
+      <button class="icon-btn" id="resetBtn">🗑 Сброс</button>
+    </div>
+
+    <h1>🔮 ИИ-Предсказатель Оценок</h1>
+    <p class="subtitle">Нейросеть нового поколения анализирует успеваемость</p>
+    <p class="meme-line" id="memeLine">Загрузка мудрости...</p>
+
+    <label for="nameInput">Имя одноклассника</label>
+    <input type="text" id="nameInput" placeholder="Например: Вася Пупкин" maxlength="30" autocomplete="off">
+
+    <label for="subjectSelect">Предмет</label>
+    <select id="subjectSelect">
+      <option value="random">🎲 Случайный предмет</option>
+      <option value="Математика">Математика</option>
+      <option value="Русский язык">Русский язык</option>
+      <option value="Литература">Литература</option>
+      <option value="Физика">Физика</option>
+      <option value="Химия">Химия</option>
+      <option value="Биология">Биология</option>
+      <option value="История">История</option>
+      <option value="География">География</option>
+      <option value="Английский язык">Английский язык</option>
+      <option value="Информатика">Информатика</option>
+      <option value="Геометрия">Геометрия</option>
+      <option value="Алгебра">Алгебра</option>
+      <option value="Обществознание">Обществознание</option>
+      <option value="Физическая культура">Физкультура</option>
+      <option value="ОБЖ">ОБЖ</option>
+      <option value="Технология">Технология</option>
+      <option value="Музыка">Музыка</option>
+      <option value="ИЗО">ИЗО</option>
+    </select>
+
+    <button id="predictBtn">Предсказать оценку</button>
+
+    <div class="btn-row">
+      <button class="btn-secondary" id="luckyBtn">🎲 Мне повезёт</button>
+      <button class="btn-secondary" id="randomNameBtn">👤 Случайное имя</button>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="loader" id="loader"></div>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="panel" id="historyBlock">
+    <h3>📜 Последние предсказания</h3>
+    <ul class="history-list" id="historyList"></ul>
+    <div class="stats">
+      <div class="stat s5"><span class="num" id="stat5">0</span><span class="lbl">Пятёрки</span></div>
+      <div class="stat s4"><span class="num" id="stat4">0</span><span class="lbl">Четвёрки</span></div>
+      <div class="stat s3"><span class="num" id="stat3">0</span><span class="lbl">Тройки</span></div>
+      <div class="stat s2"><span class="num" id="stat2">0</span><span class="lbl">Двойки</span></div>
+    </div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn-secondary" id="exportCsvBtn">💾 CSV</button>
+      <button class="btn-secondary" id="exportTxtBtn">📄 TXT</button>
+    </div>
+  </div>
+
+  <div class="panel" id="ratingBlock">
+    <h3>🏅 Рейтинг класса</h3>
+    <ul class="rating-list" id="ratingList"></ul>
+  </div>
+
+  <div class="panel" id="achBlock">
+    <h3>🏆 Ачивки</h3>
+    <div class="ach-grid" id="achGrid"></div>
+  </div>
+
+  <div class="footer">
+    © ИИ-Предсказатель v7.2 · Точность 99.9%*<br>
+    <small>*на самом деле рандом, не обижайся</small>
+  </div>
+
+</div>
+
+<div class="modal" id="teacherModal">
+  <div class="modal-content">
+    <h2>👨‍🏫 Режим учителя</h2>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">Задай оценку вручную. Арсений всё равно получит 5.</p>
+    <label>Имя</label>
+    <input type="text" id="teacherName" placeholder="Имя" maxlength="30">
+    <label>Оценка</label>
+    <select id="teacherGrade">
+      <option value="5">5</option>
+      <option value="4">4</option>
+      <option value="3">3</option>
+      <option value="2">2</option>
+    </select>
+    <button id="teacherSave">Сохранить</button>
+    <button class="btn-secondary" id="teacherClose">Отмена</button>
+  </div>
+</div>
+
+<audio id="mellstroySound" src="sound.mp3" preload="auto"></audio>
+
+<script>
+  const COMMENTS_5 = [
+    "Учитель в шоке. Ты уверен, что это твой дневник?",
+    "Пятёрка?! ИИ перепроверил трижды. Ошибки нет. Ты — легенда.",
+    "Даже калькулятор завидует. Он столько не вытянет.",
+    "Мама будет плакать. Папа впервые за год скажет 'молодец'.",
+    "Запиши это в дневник, сфоткай, отправь бабушке. Такого больше не будет.",
+    "Астрологи объявили неделю пятёрок. Ты попал в статистику.",
+    "Это настолько редко, что ИИ хочет взять автограф.",
+    "Ты только что обыграл теорию вероятности. Гордись.",
+    "Пятёрка. Не привыкай, это раз в жизни.",
+    "Учитель поставил и сам пошёл проверять, не ошибся ли."
+  ];
+
+  const COMMENTS_4 = [
+    "Четвёрка — как зарплата: вроде есть, но мало.",
+    "Почти пятёрка. Почти. Как почти домашка.",
+    "Учитель поставил и молча вздохнул.",
+    "Родители скажут 'молодец', но без энтузиазма.",
+    "Четвёрка — это оценка для тех, кто мог, но не захотел.",
+    "Ты не двоечник, но и не отличник. Где-то посередине жизни.",
+    "Норм, но сосед по парте уже смеётся.",
+    "Четвёрка — это как чай без сахара: вроде норм, но не то.",
+    "Не идеально, но трояк бы расстроил больше.",
+    "Четвёрка — оценка для скромных. Ты не выделяешься."
+  ];
+
+  const COMMENTS_3 = [
+    "Тройка — оценка оптимистов. Не двойка — уже праздник.",
+    "Учитель поставил и отвернулся. Ему всё равно.",
+    "Тройка — это как 'удовлетворительно', но с грустью в глазах.",
+    "Родители скажут 'ну хоть не два'. Классика.",
+    "Стабильность — признак мастерства. Ты стабилен, как трамвай.",
+    "Тройка — не позор, но и не повод для гордости.",
+    "Ты в зоне комфорта. Учителя тоже люди, им лень ставить два.",
+    "Тройка — это когда ни рыба, ни мясо, ни дневник показать не стыдно.",
+    "Оценка 'нормально'. Как борщ в столовой — съедобно.",
+    "Тройка — это как понедельник: ничего хорошего, но живёшь."
+  ];
+
+  const COMMENTS_2 = [
+    "Двойка. Даже ИИ расстроился и пошёл пить чай.",
+    "Родители будут 'поговорить'. Готовься.",
+    "Учитель поставил и перекрестился. Три раза.",
+    "Твой дневник плачет. Он этого не заслужил.",
+    "Двойка — тоже результат. Отрицательный, но результат.",
+    "Учитель звонит родителям. Беги, пока есть время.",
+    "Это фиаско, братан. Полное и безоговорочное.",
+    "Двойка — как снег в мае: неприятно, но бывает.",
+    "ИИ перепроверил. Не ошибка. Соболезную.",
+    "Двойка. Просто двойка. Без комментариев, всё и так ясно.",
+    "Твоя успеваемость ушла в минус. Поздравляем.",
+    "Двойка — это когда даже шпаргалка не помогла."
+  ];
+
+  const COMMENTS_ARSENIY = [
+    "Арсений, ты опять всех обыграл.",
+    "ИИ вздохнул и поставил пятёрку. Опять.",
+    "Для Арсения двойки не предусмотрены. Это в правилах.",
+    "Ну конечно, Арсений. Кто бы сомневался.",
+    "Пятёрка. Как всегда. Скучно, Арсений.",
+    "ИИ даже не проверял. И так ясно.",
+    "Арсений, оставь хоть кому-то шанс.",
+    "Пятёрка от Вселенной лично для Арсения.",
+    "Ты уверен, что тебе вообще нужен этот сайт?",
+    "ИИ поставил пятёрку и пошёл завидовать.",
+    "Арсений — любимчик ИИ. Официально.",
+    "Рандом сегодня на стороне Арсения. Как и всегда."
+  ];
+
+  const COMMENT_HACK = "Попытался сломать систему, сделал ещё хуже";
+  const COMMENT_MELLSTROY = "Меллстрой? Держи пятёрку, братан. Не благодари.";
+
+  const LOADING_PHRASES = [
+    "Подключение к базе школы...",
+    "Сканирование журнала учителя...",
+    "Поиск твоих долгов по домашке...",
+    "Проверка, не списал ли ты...",
+    "Сверка с гороскопом на сегодня...",
+    "Запрос в министерство образования...",
+    "Консультация с астрологом...",
+    "Опрос одноклассников...",
+    "Анализ почерка... хм, как курица лапой...",
+    "Проверка, помнит ли тебя учитель...",
+    "Совещание с Вселенной...",
+    "Расчёт кармы за четверть...",
+    "Проверка, есть ли у тебя шанс...",
+    "Финальный вердикт..."
+  ];
+
+  const MEME_LINES = [
+    "ИИ уже знает твою оценку. Ты — нет.",
+    "Точность 99.9%. Оставшиеся 0.1% — это когда учитель добрый.",
+    "Сегодня звёзды говорят: 'ну посмотрим'.",
+    "Нейросеть тренировалась на дневниках двоечников.",
+    "Если что, это не мы. Это математика.",
+    "Оценка не повлияет на твою жизнь. Ну, почти.",
+    "ИИ не ошибается. Ошибается журнал.",
+    "Ты уже проиграл, но ещё не знаешь.",
+    "Астрологи предупреждали.",
+    "Рандом — единственный честный учитель.",
+    "Двоек нет. Расслабься. Шутка.",
+    "Это не баг, это фича.",
+    "Все оценки уже написаны. Мы просто читаем.",
+    "Не ной. Лучше учись."
+  ];
+
+  const RANDOM_NAMES = [
+    "Вася Пупкин", "Петя Иванов", "Маша Сидорова", "Коля Петров",
+    "Лена Смирнова", "Дима Кузнецов", "Оля Попова", "Саша Волков",
+    "Настя Морозова", "Артём Соколов", "Катя Лебедева", "Игорь Новиков",
+    "Юля Орлова", "Максим Зайцев", "Соня Крылова", "Ваня Белов",
+    "Аня Соловьёва", "Гоша Михайлов", "Даша Фёдорова", "Толя Егоров"
+  ];
+
+  const EMOJI_BY_GRADE = { 5: "🥳", 4: "🙂", 3: "😐", 2: "💀" };
+  const CONFETTI_CHARS = ["🎉", "⭐", "✨", "🎊", "💚", "🌟", "💎", "👑"];
+
+  const ACHIEVEMENTS = [
+    { id: "first",   icon: "🎬", name: "Первый шаг",     desc: "Первое предсказание" },
+    { id: "ten",     icon: "🔟", name: "Десятка",        desc: "10 предсказаний" },
+    { id: "fifty",   icon: "🏅", name: "Полтинник",      desc: "50 предсказаний" },
+    { id: "five5",   icon: "⭐", name: "Пятёрочник",     desc: "5 пятёрок" },
+    { id: "five20",  icon: "🌟", name: "Отличник",       desc: "20 пятёрок" },
+    { id: "four10",  icon: "📗", name: "Хорошист",       desc: "10 четвёрок" },
+    { id: "streak5", icon: "🔥", name: "Серия 5",        desc: "5 пятёрок подряд" },
+    { id: "streak10",icon: "💥", name: "Серия 10",       desc: "10 пятёрок подряд" },
+    { id: "arseniy", icon: "👑", name: "Арсений",        desc: "Найти пасхалку Арсения" },
+    { id: "teacher", icon: "👨‍🏫", name: "Режим учителя", desc: "Использовать режим учителя" },
+    { id: "hacker",  icon: "💀", name: "Хакер",          desc: "Попытаться поставить Арсению 2 или 3" },
+    { id: "mell",    icon: "🎤", name: "Меллстрой",      desc: "Найти пасхалку Меллстроя" },
+    { id: "night",   icon: "🌙", name: "Полуночник",     desc: "Предсказать после 00:00" },
+    { id: "allsubj", icon: "📚", name: "Эрудит",         desc: "Пройти 10 разных предметов" }
+  ];
+
+  let history = [];
+  let forcedGrades = {};
+  let soundEnabled = false;
+  let unlockedAch = {};
+  let streak5 = 0;
+
+  const nameInput = document.getElementById("nameInput");
+  const subjectSelect = document.getElementById("subjectSelect");
+  const predictBtn = document.getElementById("predictBtn");
+  const luckyBtn = document.getElementById("luckyBtn");
+  const randomNameBtn = document.getElementById("randomNameBtn");
+  const resultDiv = document.getElementById("result");
+  const progressBar = document.getElementById("progressBar");
+  const progressFill = document.getElementById("progressFill");
+  const loader = document.getElementById("loader");
+  const historyBlock = document.getElementById("historyBlock");
+  const historyList = document.getElementById("historyList");
+  const stat5 = document.getElementById("stat5");
+  const stat4 = document.getElementById("stat4");
+  const stat3 = document.getElementById("stat3");
+  const stat2 = document.getElementById("stat2");
+  const soundBtn = document.getElementById("soundBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const teacherBtn = document.getElementById("teacherBtn");
+  const teacherModal = document.getElementById("teacherModal");
+  const teacherName = document.getElementById("teacherName");
+  const teacherGrade = document.getElementById("teacherGrade");
+  const teacherSave = document.getElementById("teacherSave");
+  const teacherClose = document.getElementById("teacherClose");
+  const exportCsvBtn = document.getElementById("exportCsvBtn");
+  const exportTxtBtn = document.getElementById("exportTxtBtn");
+  const memeLine = document.getElementById("memeLine");
+  const themeBtn = document.getElementById("themeBtn");
+  const achBtn = document.getElementById("achBtn");
+  const achBlock = document.getElementById("achBlock");
+  const achGrid = document.getElementById("achGrid");
+  const ratingBlock = document.getElementById("ratingBlock");
+  const ratingList = document.getElementById("ratingList");
+
+  const randomFrom = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[m]));
+  }
+
+  function beep(freq, duration, type = "sine") {
+    if (!soundEnabled) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  function fanfare() {
+    if (!soundEnabled) return;
+    const notes = [523, 659, 784, 1047];
+    notes.forEach((f, i) => {
+      setTimeout(() => beep(f, 0.25, "triangle"), i * 120);
+    });
+  }
+
+  function shakeScreen() {
+    document.body.classList.add("shake");
+    setTimeout(() => document.body.classList.remove("shake"), 650);
+  }
+
+  function setBgForGrade(grade) {
+    document.body.classList.remove("bg-5", "bg-4", "bg-3", "bg-2");
+    if (grade === 5) document.body.classList.add("bg-5");
+    else if (grade === 4) document.body.classList.add("bg-4");
+    else if (grade === 3) document.body.classList.add("bg-3");
+    else if (grade === 2) document.body.classList.add("bg-2");
+  }
+
+  function resetBg() {
+    document.body.classList.remove("bg-5", "bg-4", "bg-3", "bg-2");
+  }
+
+  function spawnConfetti(count = 40) {
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("div");
+      el.className = "confetti";
+      el.textContent = randomFrom(CONFETTI_CHARS);
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.fontSize = (16 + Math.random() * 22) + "px";
+      el.style.animationDuration = (2 + Math.random() * 2) + "s";
+      el.style.animationDelay = (Math.random() * 0.6) + "s";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 5000);
+    }
+  }
+
+  function getGradeWithComment(forced) {
+    if (forced === 5) return { grade: 5, comment: randomFrom(COMMENTS_5), cls: "g5" };
+    if (forced === 4) return { grade: 4, comment: randomFrom(COMMENTS_4), cls: "g4" };
+    if (forced === 3) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
+    if (forced === 2) return { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
+    const r = Math.random();
+    if (r < 0.30) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
+    return { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
+  }
+
+  function getArseniyGrade() {
+    const r = Math.random();
+    if (r < 0.85) return { grade: 5, comment: randomFrom(COMMENTS_ARSENIY), cls: "g5" };
+    return { grade: 4, comment: randomFrom(COMMENTS_ARSENIY), cls: "g4" };
+  }
+
+  function isArseniy(name) {
+    const l = name.toLowerCase().trim();
+    return l.startsWith("арсен") || l.startsWith("arsen") || l === "сений";
+  }
+
+  function isSelfRef(name) {
+    const l = name.toLowerCase().trim();
+    return l === "я" || l === "ты" || l === "себя" || l === "меня";
+  }
+
+  function isMellstroy(name) {
+    const l = name.toLowerCase().trim();
+    return l === "мелстрой" || l === "меллстрой" || l === "mellstroy" ||
+           l === "мел" || l === "mell" || l.startsWith("мелстрой") ||
+           l.startsWith("mellstroy");
+  }
+
+  function playMellstroy() {
+    const audio = document.getElementById("mellstroySound");
+    if (audio) {
+      try {
+        audio.currentTime = 0;
+        const p = audio.play();
+        if (p && p.catch) {
+          p.catch(e => console.warn("Звук не проигран:", e));
+        }
+      } catch (e) {
+        console.warn("Ошибка звука:", e);
+      }
+    }
+  }
+
+  function checkEasterEgg(name) {
+    const l = name.toLowerCase().trim();
+    const eggs = {
+      "учитель": { g: 5, c: "Учитель всегда прав. Даже когда неправ." },
+      "училка": { g: 5, c: "Учитель всегда прав. Даже когда неправ." },
+      "марь иванна": { g: 5, c: "Марь Иванна, мы всё исправим!" },
+      "директор": { g: 5, c: "Директор не получает двоек. Директор ИХ СТАВИТ." },
+      "директриса": { g: 5, c: "Директор не получает двоек. Директор ИХ СТАВИТ." },
+      "ленин": { g: 5, c: "У него были другие оценки. По истории." },
+      "сталин": { g: 5, c: "У него были другие оценки. По истории." },
+      "путин": { g: 5, c: "Оценка стабильная. Как курс рубля." },
+      "бот": { g: 5, c: "Боты не получают двоек. Боты ИХ ГЕНЕРИРУЮТ." },
+      "byme": { g: 5, c: "BYME не оценивают. BYME ОЦЕНИВАЕТ." },
+      "госуслуги": { g: 5, c: "Госуслуги всегда 'работают'. По документам." },
+      "сбербанк": { g: 5, c: "Сбербанк одобрил пятёрку. Кредит не одобрил." },
+      "налоговая": { g: 5, c: "Налоговая не ставит оценки. Налоговая ставит суммы." }
+    };
+    return eggs[l] || null;
+  }
+
+  function unlockAch(id) {
+    if (unlockedAch[id]) return;
+    unlockedAch[id] = true;
+    saveAll();
+    renderAch();
+    const a = ACHIEVEMENTS.find(x => x.id === id);
+    if (a) showToast(a.icon, a.name, a.desc);
+    beep(1000, 0.2, "triangle");
+  }
+
+  function showToast(icon, name, desc) {
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.innerHTML = `<span class="toast-icon">${icon}</span><b>Ачивка!</b> ${escapeHtml(name)}<small>${escapeHtml(desc)}</small>`;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add("show"), 50);
+    setTimeout(() => {
+      t.classList.remove("show");
+      setTimeout(() => t.remove(), 500);
+    }, 3500);
+  }
+
+  function renderAch() {
+    achGrid.innerHTML = "";
+    ACHIEVEMENTS.forEach(a => {
+      const div = document.createElement("div");
+      div.className = "ach" + (unlockedAch[a.id] ? " unlocked" : "");
+      div.innerHTML = `
+        <span class="ach-icon">${a.icon}</span>
+        <div>
+          <div class="ach-name">${a.name}</div>
+          <div class="ach-desc">${a.desc}</div>
+        </div>
+      `;
+      achGrid.appendChild(div);
+    });
+  }
+
+  function checkAchievements(grade, name) {
+    const total = history.length;
+    const c5 = history.filter(h => h.grade === 5).length;
+    const c4 = history.filter(h => h.grade === 4).length;
+    if (total >= 1) unlockAch("first");
+    if (total >= 10) unlockAch("ten");
+    if (total >= 50) unlockAch("fifty");
+    if (c5 >= 5) unlockAch("five5");
+    if (c5 >= 20) unlockAch("five20");
+    if (c4 >= 10) unlockAch("four10");
+    if (grade === 5) {
+      streak5++;
+      if (streak5 >= 5) unlockAch("streak5");
+      if (streak5 >= 10) unlockAch("streak10");
+    } else {
+      streak5 = 0;
+    }
+    if (isArseniy(name)) unlockAch("arseniy");
+    if (isMellstroy(name)) unlockAch("mell");
+    const hour = new Date().getHours();
+    if (hour >= 0 && hour < 5) unlockAch("night");
+    const subjects = new Set(history.map(h => h.subject));
+    if (subjects.size >= 10) unlockAch("allsubj");
+  }
+
+  function loadAll() {
+    try {
+      const raw = localStorage.getItem("grade_predictor_history_v7");
+      if (raw) {
+        history = JSON.parse(raw);
+        if (!Array.isArray(history)) history = [];
+      }
+      const rawForced = localStorage.getItem("grade_predictor_forced_v7");
+      if (rawForced) {
+        forcedGrades = JSON.parse(rawForced);
+        if (typeof forcedGrades !== "object" || forcedGrades === null) forcedGrades = {};
+        Object.keys(forcedGrades).forEach(k => {
+          if (![2, 3, 4, 5].includes(forcedGrades[k])) delete forcedGrades[k];
+        });
+      }
+      const rawAch = localStorage.getItem("grade_predictor_ach_v7");
+      if (rawAch) {
+        unlockedAch = JSON.parse(rawAch);
+        if (typeof unlockedAch !== "object" || unlockedAch === null) unlockedAch = {};
+      }
+      const rawTheme = localStorage.getItem("grade_predictor_theme_v7");
+      if (rawTheme === "light") document.body.classList.add("light");
+    } catch (e) {
+      history = [];
+      forcedGrades = {};
+      unlockedAch = {};
+    }
+  }
+
+  function saveAll() {
+    try {
+      localStorage.setItem("grade_predictor_history_v7", JSON.stringify(history));
+      localStorage.setItem("grade_predictor_forced_v7", JSON.stringify(forcedGrades));
+      localStorage.setItem("grade_predictor_ach_v7", JSON.stringify(unlockedAch));
+      localStorage.setItem("grade_predictor_theme_v7", document.body.classList.contains("light") ? "light" : "dark");
+    } catch (e) {}
+  }
+
+  function renderHistory() {
+    if (history.length === 0) {
+      historyBlock.classList.remove("show");
+      ratingBlock.classList.remove("show");
+      return;
+    }
+    historyBlock.classList.add("show");
+    historyList.innerHTML = "";
+    history.slice(-10).reverse().forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span>${escapeHtml(item.name)} <small style="color:#666">· ${escapeHtml(item.subject)}</small></span>
+        <span class="g ${item.cls}">${item.grade}</span>
+      `;
+      historyList.appendChild(li);
+    });
+    let c5 = 0, c4 = 0, c3 = 0, c2 = 0;
+    history.forEach(h => {
+      if (h.grade === 5) c5++;
+      else if (h.grade === 4) c4++;
+      else if (h.grade === 3) c3++;
+      else c2++;
+    });
+    stat5.textContent = c5;
+    stat4.textContent = c4;
+    stat3.textContent = c3;
+    stat2.textContent = c2;
+    renderRating();
+  }
+
+  function renderRating() {
+    const map = {};
+    history.forEach(h => {
+      const key = h.name.toLowerCase();
+      if (!map[key]) map[key] = { name: h.name, sum: 0, count: 0 };
+      map[key].sum += h.grade;
+      map[key].count++;
+    });
+    const arr = Object.values(map)
+      .map(x => ({ name: x.name, avg: x.sum / x.count, count: x.count }))
+      .sort((a, b) => b.avg - a.avg);
+    if (arr.length === 0) {
+      ratingBlock.classList.remove("show");
+      return;
+    }
+    ratingBlock.classList.add("show");
+    ratingList.innerHTML = "";
+    arr.slice(0, 10).forEach(x => {
+      const li = document.createElement("li");
+      const cls = x.avg >= 4.5 ? "high" : x.avg >= 3.5 ? "mid" : x.avg >= 2.5 ? "low" : "bad";
+      li.innerHTML = `
+        <span>${escapeHtml(x.name)} <small style="color:#666">(${x.count})</small></span>
+        <span class="avg ${cls}">${x.avg.toFixed(2)}</span>
+      `;
+      ratingList.appendChild(li);
+    });
+  }
+
+  function pickSubject() {
+    let subject = subjectSelect.value;
+    if (subject === "random") {
+      subject = randomFrom([
+        "Математика", "Русский язык", "Литература", "Физика", "Химия",
+        "Биология", "История", "География", "Английский язык",
+        "Информатика", "Геометрия", "Алгебра", "Обществознание",
+        "Физкультура", "ОБЖ", "Технология", "Музыка", "ИЗО"
+      ]);
+    }
+    return subject;
+  }
+
+  function runProgress(callback) {
+    predictBtn.disabled = true;
+    luckyBtn.disabled = true;
+    resultDiv.classList.remove("show");
+    progressBar.classList.add("show");
+    loader.textContent = "";
+    progressFill.style.width = "0%";
+    let step = 0;
+    const totalSteps = LOADING_PHRASES.length;
+    const interval = setInterval(() => {
+      loader.textContent = LOADING_PHRASES[step];
+      progressFill.style.width = `${((step + 1) / totalSteps) * 100}%`;
+      beep(400 + step * 40, 0.04);
+      step++;
+      if (step >= totalSteps) {
+        clearInterval(interval);
+        setTimeout(callback, 400);
+      }
+    }, 320);
+  }
+
+  function predict() {
+    const name = nameInput.value.trim();
+    if (!name) {
+      resetBg();
+      resultDiv.classList.add("show");
+      resultDiv.innerHTML = '⚠️ Введи имя, умник. ИИ не умеет читать мысли (пока).';
+      beep(220, 0.15);
+      shakeScreen();
+      return;
+    }
+
+    if (isMellstroy(name)) {
+      playMellstroy();
+      const subject = pickSubject();
+      showResult(name, subject, 5, COMMENT_MELLSTROY, "g5");
+      unlockAch("mell");
+      return;
+    }
+
+    const egg = checkEasterEgg(name);
+    if (egg) {
+      const subject = pickSubject();
+      showResult(name, subject, egg.g, egg.c, "g" + egg.g);
+      return;
+    }
+
+    if (isArseniy(name)) {
+      const subject = pickSubject();
+      runProgress(() => {
+        const forced = forcedGrades[name.toLowerCase()];
+        let res;
+        if (forced === 2 || forced === 3) {
+          res = { grade: 5, comment: COMMENT_HACK, cls: "g5" };
+          unlockAch("hacker");
+        } else if (forced === 4) {
+          res = { grade: 4, comment: randomFrom(COMMENTS_ARSENIY), cls: "g4" };
+        } else if (forced === 5) {
+          res = { grade: 5, comment: randomFrom(COMMENTS_ARSENIY), cls: "g5" };
+        } else {
+          res = getArseniyGrade();
+        }
+        if (forced !== undefined) {
+          delete forcedGrades[name.toLowerCase()];
+          saveAll();
+        }
+        showResult(name, subject, res.grade, res.comment, res.cls);
+      });
+      return;
+    }
+
+    const subject = pickSubject();
+    runProgress(() => {
+      const lower = name.toLowerCase().trim();
+      const forced = forcedGrades[lower];
+      const selfRef = isSelfRef(name);
+      let res;
+      if (forced === 5 || forced === 4 || forced === 3 || forced === 2) {
+        res = getGradeWithComment(forced);
+      } else if (selfRef) {
+        const r = Math.random();
+        if (r < 0.30) res = { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
+        else res = { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
+      } else {
+        res = getGradeWithComment();
+      }
+      if (forced !== undefined) {
+        delete forcedGrades[lower];
+        saveAll();
+      }
+      showResult(name, subject, res.grade, res.comment, res.cls);
+    });
+  }
+
+  function showResult(name, subject, grade, comment, cls) {
+    progressBar.classList.remove("show");
+    loader.textContent = "";
+    resultDiv.innerHTML = `
+      <div class="result-name">Результат анализа для <b>${escapeHtml(name)}</b>:</div>
+      <div class="result-subject">Предмет: <b>${escapeHtml(subject)}</b></div>
+      <div class="grade-wrap">
+        <span class="emoji-face">${EMOJI_BY_GRADE[grade]}</span>
+        <span class="grade ${cls}">${grade}</span>
+      </div>
+      <div class="result-comment">${escapeHtml(comment)}</div>
+    `;
+    resultDiv.classList.add("show");
+    predictBtn.disabled = false;
+    luckyBtn.disabled = false;
+    predictBtn.textContent = "Предсказать ещё раз";
+    setBgForGrade(grade);
+    if (grade === 5) {
+      fanfare();
+      spawnConfetti(50);
+    } else if (grade === 4) {
+      beep(660, 0.15);
+    } else if (grade === 3) {
+      beep(440, 0.15);
+    } else {
+      beep(200, 0.3);
+      shakeScreen();
+    }
+    history.push({ name, subject, grade, cls, ts: Date.now() });
+    if (history.length > 100) history = history.slice(-100);
+    saveAll();
+    renderHistory();
+    checkAchievements(grade, name);
+  }
+
+  function resetAll() {
+    if (!confirm("Сбросить всю историю, статистику, ачивки и режим учителя?")) return;
+    history = [];
+    forcedGrades = {};
+    unlockedAch = {};
+    streak5 = 0;
+    saveAll();
+    renderHistory();
+    renderAch();
+    resultDiv.classList.remove("show");
+    resultDiv.innerHTML = "";
+    resetBg();
+    predictBtn.textContent = "Предсказать оценку";
+    beep(300, 0.1);
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    soundBtn.textContent = soundEnabled ? "🔊 Звук" : "🔇 Звук";
+    if (soundEnabled) beep(660, 0.1);
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("light");
+    themeBtn.textContent = document.body.classList.contains("light") ? "☀️ Тема" : "🌙 Тема";
+    saveAll();
+  }
+
+  function openTeacherModal() {
+    teacherModal.classList.add("show");
+    teacherName.value = "";
+    teacherGrade.value = "5";
+  }
+
+  function closeTeacherModal() {
+    teacherModal.classList.remove("show");
+  }
+
+  function saveTeacherGrade() {
+    const name = teacherName.value.trim().toLowerCase();
+    const grade = parseInt(teacherGrade.value, 10);
+    if (!name) { alert("Введи имя!"); return; }
+    if (![2, 3, 4, 5].includes(grade)) {
+      alert("Оценка должна быть 2, 3, 4 или 5!");
+      return;
+    }
+    forcedGrades[name] = grade;
+    saveAll();
+    unlockAch("teacher");
+    closeTeacherModal();
+    alert(`Ок! Следующее предсказание для "${teacherName.value.trim()}" будет ${grade}.`);
+    beep(700, 0.15);
+  }
+
+  function exportCsv() {
+    if (history.length === 0) { alert("История пуста!"); return; }
+    const lines = ["Дата,Имя,Предмет,Оценка"];
+    history.forEach(h => {
+      const d = new Date(h.ts).toLocaleString();
+      const safeName = `"${h.name.replace(/"/g, '""')}"`;
+      const safeSubj = `"${h.subject.replace(/"/g, '""')}"`;
+      lines.push(`${d},${safeName},${safeSubj},${h.grade}`);
+    });
+    const text = "\uFEFF" + lines.join("\n");
+    downloadFile(text, "predictions.csv", "text/csv;charset=utf-8");
+  }
+
+  function exportTxt() {
+    if (history.length === 0) { alert("История пуста!"); return; }
+    const lines = history.map(h => {
+      const d = new Date(h.ts).toLocaleString();
+      return `${d} | ${h.name} | ${h.subject} | ${h.grade}`;
+    });
+    const text = "История предсказаний\n" + "=".repeat(40) + "\n" + lines.join("\n");
+    downloadFile(text, "predictions.txt", "text/plain;charset=utf-8");
+  }
+
+  function downloadFile(text, filename, mime) {
+    const blob = new Blob([text], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function setRandomName() {
+    nameInput.value = randomFrom(RANDOM_NAMES);
+    beep(500, 0.08);
+  }
+
+  function luckyPredict() {
+    nameInput.value = randomFrom(RANDOM_NAMES);
+    subjectSelect.value = "random";
+    predict();
+  }
+
+  function rotateMeme() {
+    memeLine.textContent = randomFrom(MEME_LINES);
+  }
+
+  function toggleAchPanel() {
+    achBlock.classList.toggle("show");
+    achBtn.textContent = achBlock.classList.contains("show") ? "🏆 Скрыть" : "🏆 Ачивки";
+  }
+
+  predictBtn.addEventListener("click", predict);
+  luckyBtn.addEventListener("click", luckyPredict);
+  randomNameBtn.addEventListener("click", setRandomName);
+  soundBtn.addEventListener("click", toggleSound);
+  themeBtn.addEventListener("click", toggleTheme);
+  resetBtn.addEventListener("click", resetAll);
+  teacherBtn.addEventListener("click", openTeacherModal);
+  teacherSave.addEventListener("click", saveTeacherGrade);
+  teacherClose.addEventListener("click", closeTeacherModal);
+  achBtn.addEventListener("click", toggleAchPanel);
+  exportCsvBtn.addEventListener("click", exportCsv);
+  exportTxtBtn.addEventListener("click", exportTxt);
+  nameInput.addEventListener("keydown", e => { if (e.key === "Enter") predict(); });
+  teacherModal.addEventListener("click", e => { if (e.target === teacherModal) closeTeacherModal(); });
+
+  loadAll();
+  renderHistory();
+  renderAch();
+  rotateMeme();
+  setInterval(rotateMeme, 8000);
+</script>
+
+</body>
+</html>
