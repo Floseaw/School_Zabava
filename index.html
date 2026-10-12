@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ИИ-Предсказатель Оценок v7.2</title>
+<title>Diary from the Future v8.0</title>
 <meta name="theme-color" content="#050510">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -11,18 +11,10 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --bg0: #050510;
-    --bg1: #0a0a1f;
-    --bg2: #12122e;
-    --accent1: #00f2fe;
-    --accent2: #7b2ff7;
-    --accent3: #4facfe;
-    --g5: #00ff88;
-    --g4: #ffd93d;
-    --g3: #ff9f43;
-    --g2: #ff4757;
-    --text: #ffffff;
-    --text-dim: #8b8b9e;
+    --bg0: #050510; --bg1: #0a0a1f; --bg2: #12122e;
+    --accent1: #00f2fe; --accent2: #7b2ff7; --accent3: #4facfe;
+    --g5: #00ff88; --g4: #ffd93d; --g3: #ff9f43; --g2: #ff4757;
+    --text: #ffffff; --text-dim: #8b8b9e;
     --card-bg: rgba(18, 18, 46, 0.7);
     --card-border: rgba(123, 47, 247, 0.25);
     --input-bg: rgba(5, 5, 16, 0.7);
@@ -31,18 +23,13 @@
   }
 
   body.light {
-    --bg0: #f0f4ff;
-    --bg1: #e0e7ff;
-    --bg2: #c7d2fe;
-    --text: #1a1a2e;
-    --text-dim: #555;
+    --bg0: #f0f4ff; --bg1: #e0e7ff; --bg2: #c7d2fe;
+    --text: #1a1a2e; --text-dim: #555;
     --card-bg: rgba(255, 255, 255, 0.85);
     --card-border: rgba(37, 99, 235, 0.25);
     --input-bg: rgba(255, 255, 255, 0.9);
     --result-bg: rgba(255, 255, 255, 0.95);
-    --accent1: #06b6d4;
-    --accent2: #2563eb;
-    --accent3: #2563eb;
+    --accent1: #06b6d4; --accent2: #2563eb; --accent3: #2563eb;
     --glow: 0 0 30px rgba(37, 99, 235, 0.25);
   }
 
@@ -52,13 +39,9 @@
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
     background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg1) 40%, var(--bg0) 100%);
     background-attachment: fixed;
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 16px;
-    color: var(--text);
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 16px; color: var(--text);
     transition: background 0.6s ease, color 0.3s ease;
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
@@ -68,16 +51,12 @@
 
   body::before {
     content: '';
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    position: fixed; top: -50%; left: -50%;
+    width: 200%; height: 200%;
     background: radial-gradient(circle at 20% 20%, rgba(123, 47, 247, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(0, 242, 254, 0.1) 0%, transparent 40%);
     animation: bgMove 20s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   @keyframes bgMove {
@@ -102,16 +81,12 @@
     80% { transform: translate(5px, -4px); }
     90% { transform: translate(-3px, 3px); }
   }
-
   body.shake { animation: shake 0.6s; }
 
   .confetti {
-    position: fixed;
-    top: -20px;
-    font-size: 24px;
+    position: fixed; top: -20px; font-size: 24px;
     animation: fall linear forwards;
-    pointer-events: none;
-    z-index: 999;
+    pointer-events: none; z-index: 999;
   }
 
   @keyframes fall {
@@ -131,17 +106,13 @@
     text-align: center;
     margin-bottom: 16px;
     transition: 0.3s;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
 
   .card::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 2px;
+    position: absolute; top: 0; left: -100%;
+    width: 100%; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
     animation: scan 3s linear infinite;
   }
@@ -149,15 +120,13 @@
   @keyframes scan { to { left: 100%; } }
 
   h1 {
-    font-size: 26px;
-    margin-bottom: 6px;
+    font-size: 26px; margin-bottom: 6px;
     background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent1));
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-weight: 900;
-    line-height: 1.2;
+    font-weight: 900; line-height: 1.2;
     animation: shimmer 4s linear infinite;
     letter-spacing: -0.5px;
   }
@@ -167,42 +136,30 @@
   .subtitle { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.5px; }
 
   .meme-line {
-    font-size: 11px;
-    color: #ffd93d;
-    font-style: italic;
-    margin-bottom: 20px;
-    min-height: 16px;
+    font-size: 11px; color: #ffd93d; font-style: italic;
+    margin-bottom: 20px; min-height: 16px;
     transition: 0.3s;
     text-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
   }
-
   body.light .meme-line { color: #b45309; text-shadow: none; }
 
   label {
-    display: block;
-    text-align: left;
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 700;
+    display: block; text-align: left;
+    font-size: 10px; color: var(--text-dim);
+    margin-bottom: 6px; text-transform: uppercase;
+    letter-spacing: 1.5px; font-weight: 700;
   }
 
   input, select {
-    width: 100%;
-    padding: 14px 16px;
+    width: 100%; padding: 14px 16px;
     border-radius: 12px;
     border: 1px solid var(--card-border);
     background: var(--input-bg);
-    color: var(--text);
-    font-size: 16px;
-    outline: none;
-    transition: 0.25s;
+    color: var(--text); font-size: 16px;
+    outline: none; transition: 0.25s;
     margin-bottom: 14px;
     font-family: inherit;
-    -webkit-appearance: none;
-    appearance: none;
+    -webkit-appearance: none; appearance: none;
     font-weight: 500;
   }
 
@@ -214,7 +171,6 @@
     background-position: right 16px center;
     padding-right: 40px;
   }
-
   body.light select {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%232563eb' d='M6 9L1 4h10z'/></svg>");
   }
@@ -228,85 +184,63 @@
   body.light select option { background: #fff; color: #000; }
 
   button {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    border: none;
+    width: 100%; padding: 16px;
+    border-radius: 12px; border: none;
     background: linear-gradient(135deg, var(--accent2), var(--accent3));
-    color: #fff;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.2s;
+    color: #fff; font-size: 16px; font-weight: 800;
+    cursor: pointer; transition: 0.2s;
     margin-bottom: 12px;
-    font-family: inherit;
-    letter-spacing: 1px;
-    -webkit-appearance: none;
-    appearance: none;
+    font-family: inherit; letter-spacing: 1px;
+    -webkit-appearance: none; appearance: none;
     touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
+    user-select: none; -webkit-user-select: none;
     text-transform: uppercase;
     box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
 
   button::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+    position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transition: left 0.6s;
   }
-
   button:hover::before { left: 100%; }
 
   button:active:not(:disabled) {
     transform: scale(0.97);
     box-shadow: 0 4px 12px rgba(123, 47, 247, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
-
   button:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .btn-secondary {
     background: rgba(123, 47, 247, 0.12);
     border: 1px solid var(--card-border);
     color: var(--text);
-    font-size: 13px;
-    padding: 13px 10px;
-    text-transform: none;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-    box-shadow: none;
+    font-size: 13px; padding: 13px 10px;
+    text-transform: none; letter-spacing: 0.5px;
+    font-weight: 600; box-shadow: none;
   }
 
   .btn-secondary:active:not(:disabled) {
     background: rgba(123, 47, 247, 0.25);
-    transform: scale(0.97);
-    box-shadow: none;
+    transform: scale(0.97); box-shadow: none;
   }
 
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .btn-row button { margin-bottom: 12px; flex: 1; min-width: 130px; }
+  .btn-row button { margin-bottom: 12px; flex: 1; min-width: 100px; }
 
   .result {
-    margin-top: 18px;
-    padding: 22px 18px;
+    margin-top: 18px; padding: 22px 18px;
     border-radius: 18px;
     background: var(--result-bg);
     border: 1px solid var(--accent2);
-    min-height: 130px;
-    font-size: 15px;
-    line-height: 1.6;
-    text-align: left;
+    min-height: 130px; font-size: 15px;
+    line-height: 1.6; text-align: left;
     display: none;
     box-shadow: var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
-
   .result.show { display: block; animation: fadeIn 0.45s ease-out; }
 
   @keyframes fadeIn {
@@ -322,22 +256,19 @@
   .grade-wrap { text-align: center; margin: 12px 0; }
 
   .emoji-face {
-    font-size: 44px;
-    display: block;
-    margin-bottom: 4px;
+    font-size: 44px; display: block; margin-bottom: 4px;
     animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     filter: drop-shadow(0 0 15px currentColor);
   }
 
   .grade {
     display: inline-block;
-    font-size: 64px;
-    font-weight: 900;
-    line-height: 1;
-    padding: 10px 28px;
-    border-radius: 18px;
+    font-size: 64px; font-weight: 900; line-height: 1;
+    padding: 10px 28px; border-radius: 18px;
     animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     letter-spacing: -2px;
+    cursor: pointer;
+    user-select: none; -webkit-user-select: none;
   }
 
   @keyframes popIn {
@@ -352,28 +283,21 @@
   .grade.g2 { color: var(--g2); text-shadow: 0 0 30px var(--g2), 0 0 60px var(--g2); }
 
   .result-comment {
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 13px;
-    font-style: italic;
+    text-align: center; color: var(--text-dim);
+    font-size: 13px; font-style: italic;
   }
 
   .progress-bar {
-    width: 100%;
-    height: 10px;
+    width: 100%; height: 10px;
     background: rgba(123, 47, 247, 0.15);
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 12px 0;
-    display: none;
+    border-radius: 5px; overflow: hidden;
+    margin: 12px 0; display: none;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
   }
-
   .progress-bar.show { display: block; }
 
   .progress-fill {
-    height: 100%;
-    width: 0%;
+    height: 100%; width: 0%;
     background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent1));
     background-size: 200% auto;
     transition: width 0.3s ease;
@@ -383,10 +307,8 @@
   }
 
   .loader {
-    font-size: 12px;
-    color: var(--accent1);
-    margin-top: 8px;
-    min-height: 18px;
+    font-size: 12px; color: var(--accent1);
+    margin-top: 8px; min-height: 18px;
     text-align: center;
     font-family: 'Courier New', monospace;
     letter-spacing: 0.5px;
@@ -398,56 +320,37 @@
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--card-border);
     border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 16px;
+    padding: 18px; margin-bottom: 16px;
     display: none;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   }
-
   .panel.show { display: block; animation: fadeIn 0.4s; }
 
   .panel h3 {
-    font-size: 12px;
-    color: var(--text-dim);
+    font-size: 12px; color: var(--text-dim);
     margin-bottom: 14px;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 700;
+    letter-spacing: 1.5px; font-weight: 700;
   }
 
   .history-list { list-style: none; max-height: 240px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
   .history-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-size: 13px;
-    margin-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 13px; margin-bottom: 5px;
     background: rgba(123, 47, 247, 0.08);
     border: 1px solid rgba(123, 47, 247, 0.1);
-    gap: 8px;
-    transition: 0.2s;
+    gap: 8px; transition: 0.2s;
   }
-
   .history-list li:hover { background: rgba(123, 47, 247, 0.15); }
-
-  .history-list li span:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .history-list li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .history-list li span.g {
-    font-weight: 900;
-    font-size: 16px;
-    padding: 2px 12px;
-    border-radius: 8px;
-    min-width: 38px;
-    text-align: center;
-    flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.3);
+    font-weight: 900; font-size: 16px;
+    padding: 2px 12px; border-radius: 8px;
+    min-width: 38px; text-align: center;
+    flex-shrink: 0; background: rgba(0, 0, 0, 0.3);
   }
 
   .history-list li span.g5 { color: var(--g5); text-shadow: 0 0 10px var(--g5); }
@@ -461,21 +364,14 @@
     background: rgba(123, 47, 247, 0.08);
     border: 1px solid rgba(123, 47, 247, 0.15);
     border-radius: 12px;
-    padding: 12px 6px;
-    text-align: center;
+    padding: 12px 6px; text-align: center;
     transition: 0.2s;
   }
-
   .stat:hover { transform: translateY(-2px); }
-
   .stat .num { font-size: 20px; font-weight: 900; display: block; letter-spacing: -1px; }
-
   .stat .lbl {
-    font-size: 9px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 4px;
+    font-size: 9px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;
   }
 
   .stat.s5 .num { color: var(--g5); text-shadow: 0 0 12px var(--g5); }
@@ -484,16 +380,12 @@
   .stat.s2 .num { color: var(--g2); text-shadow: 0 0 12px var(--g2); }
 
   .footer {
-    text-align: center;
-    font-size: 10px;
+    text-align: center; font-size: 10px;
     color: var(--text-dim);
-    margin-top: 8px;
-    margin-bottom: 20px;
-    opacity: 0.5;
-    padding: 0 10px;
+    margin-top: 8px; margin-bottom: 20px;
+    opacity: 0.5; padding: 0 10px;
     letter-spacing: 0.5px;
   }
-
   .footer small { font-size: 9px; }
 
   .top-controls { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
@@ -502,47 +394,32 @@
     background: rgba(123, 47, 247, 0.1);
     border: 1px solid var(--card-border);
     color: var(--text);
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 11px;
-    transition: 0.2s;
-    width: auto;
-    margin: 0;
+    padding: 8px 12px; border-radius: 10px;
+    cursor: pointer; font-size: 11px;
+    transition: 0.2s; width: auto; margin: 0;
     font-weight: 600;
     touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
+    user-select: none; -webkit-user-select: none;
     box-shadow: none;
-    text-transform: none;
-    letter-spacing: 0;
+    text-transform: none; letter-spacing: 0;
   }
-
   .icon-btn::before { display: none; }
-
   .icon-btn:active { background: rgba(123, 47, 247, 0.25); transform: scale(0.95); }
 
   .rating-list { list-style: none; }
   .rating-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-size: 13px;
-    margin-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 13px; margin-bottom: 5px;
     background: rgba(123, 47, 247, 0.08);
     border: 1px solid rgba(123, 47, 247, 0.1);
     gap: 8px;
   }
   .rating-list li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .rating-list li .avg {
-    font-weight: 900;
-    padding: 3px 12px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.3);
-    flex-shrink: 0;
-    font-size: 14px;
+    font-weight: 900; padding: 3px 12px;
+    border-radius: 8px; background: rgba(0, 0, 0, 0.3);
+    flex-shrink: 0; font-size: 14px;
   }
   .rating-list li .avg.high { color: var(--g5); text-shadow: 0 0 10px var(--g5); }
   .rating-list li .avg.mid  { color: var(--g4); text-shadow: 0 0 10px var(--g4); }
@@ -552,39 +429,28 @@
   .ach-grid { display: flex; flex-direction: column; gap: 8px; }
 
   .ach {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: flex; align-items: center; gap: 12px;
     background: rgba(123, 47, 247, 0.04);
     border: 1px solid rgba(128, 128, 128, 0.15);
     border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 13px;
-    text-align: left;
-    transition: 0.3s;
-    filter: blur(3px);
-    opacity: 0.55;
-    position: relative;
-    cursor: not-allowed;
-    user-select: none;
-    -webkit-user-select: none;
+    padding: 12px 14px; font-size: 13px;
+    text-align: left; transition: 0.3s;
+    filter: blur(3px); opacity: 0.55;
+    position: relative; cursor: not-allowed;
+    user-select: none; -webkit-user-select: none;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
   }
 
   .ach::after {
     content: '🔒';
-    position: absolute;
-    top: 50%;
-    right: 14px;
+    position: absolute; top: 50%; right: 14px;
     transform: translateY(-50%);
-    font-size: 18px;
-    opacity: 0.7;
-    filter: blur(0);
+    font-size: 18px; opacity: 0.7; filter: blur(0);
   }
 
   .ach.unlocked {
-    filter: blur(0);
-    opacity: 1;
-    cursor: default;
+    filter: blur(0); opacity: 1; cursor: default;
     background: linear-gradient(135deg, rgba(123, 47, 247, 0.25), rgba(0, 242, 254, 0.15));
     border-color: var(--accent2);
     box-shadow: 0 0 20px rgba(123, 47, 247, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -592,10 +458,8 @@
 
   .ach.unlocked::after {
     content: '✓';
-    color: var(--g5);
-    font-size: 20px;
-    opacity: 1;
-    text-shadow: 0 0 10px var(--g5);
+    color: var(--g5); font-size: 20px;
+    opacity: 1; text-shadow: 0 0 10px var(--g5);
   }
 
   .ach .ach-icon { font-size: 26px; flex-shrink: 0; filter: drop-shadow(0 0 8px currentColor); }
@@ -603,22 +467,16 @@
   .ach .ach-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 
   .toast {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    right: 12px;
+    position: fixed; top: 12px; left: 12px; right: 12px;
     background: linear-gradient(135deg, #4c1d95, #7b2ff7, #00f2fe);
-    color: #fff;
-    padding: 16px 20px;
+    color: #fff; padding: 16px 20px;
     border-radius: 16px;
     box-shadow: 0 15px 50px rgba(123, 47, 247, 0.5);
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 14px; font-weight: 700;
     z-index: 2000;
     transform: translateY(-200%);
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 400px; margin: 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
   .toast.show { transform: translateY(0); }
@@ -627,16 +485,13 @@
 
   .modal {
     display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    overflow-y: auto;
+    align-items: center; justify-content: center;
+    padding: 16px; overflow-y: auto;
   }
   .modal.show { display: flex; }
 
@@ -645,11 +500,9 @@
     border: 1px solid var(--card-border);
     border-radius: 20px;
     padding: 24px 22px;
-    max-width: 420px;
-    width: 100%;
+    max-width: 440px; width: 100%;
     color: var(--text);
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: 90vh; overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), var(--glow);
   }
@@ -665,6 +518,90 @@
   ::-webkit-scrollbar-thumb { background: rgba(123, 47, 247, 0.4); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(123, 47, 247, 0.6); }
 
+  /* ============ МАТРИЦА ============ */
+  body.matrix {
+    --bg0: #000000; --bg1: #001100; --bg2: #002200;
+    --accent1: #00ff00; --accent2: #00cc00; --accent3: #00ff00;
+    --text: #00ff00; --text-dim: #008800;
+    --card-bg: rgba(0, 20, 0, 0.8);
+    --card-border: rgba(0, 255, 0, 0.3);
+    --input-bg: rgba(0, 0, 0, 0.8);
+    --result-bg: rgba(0, 10, 0, 0.9);
+    --glow: 0 0 30px rgba(0, 255, 0, 0.5);
+    background: #000000 !important;
+    font-family: 'Courier New', monospace;
+  }
+  body.matrix::before { background: none; }
+  body.matrix h1 {
+    background: linear-gradient(90deg, #00ff00, #00aa00, #00ff00);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px #00ff00;
+  }
+  body.matrix .card {
+    border-color: #00ff00;
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.3), inset 0 1px 0 rgba(0, 255, 0, 0.1);
+  }
+  body.matrix button {
+    background: linear-gradient(135deg, #006600, #00cc00);
+    box-shadow: 0 8px 24px rgba(0, 255, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  body.matrix .btn-secondary {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: rgba(0, 255, 0, 0.3);
+  }
+
+  .matrix-rain {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    display: none;
+  }
+  body.matrix .matrix-rain { display: block; }
+
+  .matrix-col {
+    position: absolute;
+    top: -100%;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    color: #00ff00;
+    text-shadow: 0 0 8px #00ff00;
+    line-height: 1.2;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    animation: matrixFall linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes matrixFall {
+    to { transform: translateY(200vh); }
+  }
+
+  .konami-toast {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(135deg, #001100, #00ff00);
+    color: #000;
+    padding: 30px 40px;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: 900;
+    z-index: 3000;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(0, 255, 0, 0.8);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid #00ff00;
+    font-family: 'Courier New', monospace;
+  }
+  .konami-toast.show { transform: translate(-50%, -50%) scale(1); }
+  .konami-toast .sub { font-size: 12px; font-weight: 400; margin-top: 8px; opacity: 0.8; }
+
   @media (max-width: 480px) {
     body { padding: 10px; }
     .card { padding: 22px 16px; border-radius: 20px; }
@@ -675,7 +612,7 @@
     button { padding: 15px; font-size: 15px; margin-bottom: 10px; }
     .btn-secondary { font-size: 13px; padding: 12px 8px; }
     .btn-row { gap: 6px; }
-    .btn-row button { min-width: 100px; }
+    .btn-row button { min-width: 80px; }
     .grade { font-size: 52px; padding: 6px 22px; }
     .emoji-face { font-size: 36px; }
     .panel { padding: 14px; border-radius: 16px; }
@@ -708,7 +645,7 @@
     body { padding: 24px; }
     .card { padding: 36px 32px; }
     h1 { font-size: 30px; }
-    .btn-row button { min-width: 150px; }
+    .btn-row button { min-width: 130px; }
   }
 
   @media (hover: none) {
@@ -732,6 +669,8 @@
 </head>
 <body>
 
+<div class="matrix-rain" id="matrixRain"></div>
+
 <div class="app">
 
   <div class="card">
@@ -743,7 +682,7 @@
       <button class="icon-btn" id="resetBtn">🗑 Сброс</button>
     </div>
 
-    <h1>🔮 ИИ-Предсказатель Оценок</h1>
+    <h1>🔮 Diary from the Future</h1>
     <p class="subtitle">Нейросеть нового поколения анализирует успеваемость</p>
     <p class="meme-line" id="memeLine">Загрузка мудрости...</p>
 
@@ -780,6 +719,12 @@
       <button class="btn-secondary" id="randomNameBtn">👤 Случайное имя</button>
     </div>
 
+    <div class="btn-row">
+      <button class="btn-secondary" id="duelBtn">⚔️ Дуэль</button>
+      <button class="btn-secondary" id="guessBtn">🎯 Угадай</button>
+      <button class="btn-secondary" id="journalBtn">📓 Журнал</button>
+    </div>
+
     <div class="progress-bar" id="progressBar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
@@ -809,12 +754,12 @@
   </div>
 
   <div class="panel" id="achBlock">
-    <h3>🏆 Ачивки</h3>
+    <h3>🏆 Ачивки (долгий тап / двойной клик — описание)</h3>
     <div class="ach-grid" id="achGrid"></div>
   </div>
 
   <div class="footer">
-    © ИИ-Предсказатель v7.2 · Точность 99.9%*<br>
+    © Diary from the Future v8.0 · Точность 99.9%*<br>
     <small>*на самом деле рандом, не обижайся</small>
   </div>
 
@@ -838,9 +783,54 @@
   </div>
 </div>
 
-<audio id="mellstroySound" src="sound.mp3" preload="auto"></audio>
+<div class="modal" id="duelModal">
+  <div class="modal-content">
+    <h2>⚔️ Дуэль</h2>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">Введи два имени — узнай, кто круче.</p>
+    <label>Боец 1</label>
+    <input type="text" id="duelName1" placeholder="Имя" maxlength="30">
+    <label>Боец 2</label>
+    <input type="text" id="duelName2" placeholder="Имя" maxlength="30">
+    <button id="duelStart">Начать дуэль</button>
+    <button class="btn-secondary" id="duelClose">Отмена</button>
+    <div id="duelResult" style="margin-top:14px;"></div>
+  </div>
+</div>
+
+<div class="modal" id="guessModal">
+  <div class="modal-content">
+    <h2>🎯 Угадай оценку</h2>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">Угадай, какую оценку получит имя. 10 раундов.</p>
+    <div id="guessGame">
+      <div style="font-size:14px;margin-bottom:10px;">Раунд: <b id="guessRound">1</b> / 10</div>
+      <div style="font-size:14px;margin-bottom:10px;">Очки: <b id="guessScore">0</b></div>
+      <div style="font-size:18px;font-weight:800;margin:14px 0;text-align:center;" id="guessName">—</div>
+      <div class="btn-row" style="flex-wrap:wrap;">
+        <button class="btn-secondary" data-guess="5">5</button>
+        <button class="btn-secondary" data-guess="4">4</button>
+        <button class="btn-secondary" data-guess="3">3</button>
+        <button class="btn-secondary" data-guess="2">2</button>
+      </div>
+      <div id="guessFeedback" style="margin-top:14px;text-align:center;font-size:14px;"></div>
+    </div>
+    <button class="btn-secondary" id="guessClose" style="margin-top:14px;">Закрыть</button>
+  </div>
+</div>
+
+<div class="modal" id="journalModal">
+  <div class="modal-content">
+    <h2>📓 Классный журнал</h2>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">Все имена, которые уже предсказывались.</p>
+    <div id="journalContent"></div>
+    <button class="btn-secondary" id="journalClose" style="margin-top:14px;">Закрыть</button>
+  </div>
+</div>
+
+<audio id="mellstroySound" src="sound.mp3" preload="auto" playsinline></audio>
+<audio id="byrmaldaSound" src="byrmalda.mp3" preload="auto" playsinline></audio>
 
 <script>
+  // ============ ДАННЫЕ ============
   const COMMENTS_5 = [
     "Учитель в шоке. Ты уверен, что это твой дневник?",
     "Пятёрка?! ИИ перепроверил трижды. Ошибки нет. Ты — легенда.",
@@ -912,6 +902,7 @@
 
   const COMMENT_HACK = "Попытался сломать систему, сделал ещё хуже";
   const COMMENT_MELLSTROY = "Меллстрой? Держи пятёрку, братан. Не благодари.";
+  const COMMENT_BURMALDA = "Бурмалда? Держи пятёрку, загадочное существо.";
 
   const LOADING_PHRASES = [
     "Подключение к базе школы...",
@@ -959,28 +950,48 @@
   const CONFETTI_CHARS = ["🎉", "⭐", "✨", "🎊", "💚", "🌟", "💎", "👑"];
 
   const ACHIEVEMENTS = [
-    { id: "first",   icon: "🎬", name: "Первый шаг",     desc: "Первое предсказание" },
-    { id: "ten",     icon: "🔟", name: "Десятка",        desc: "10 предсказаний" },
-    { id: "fifty",   icon: "🏅", name: "Полтинник",      desc: "50 предсказаний" },
-    { id: "five5",   icon: "⭐", name: "Пятёрочник",     desc: "5 пятёрок" },
-    { id: "five20",  icon: "🌟", name: "Отличник",       desc: "20 пятёрок" },
-    { id: "four10",  icon: "📗", name: "Хорошист",       desc: "10 четвёрок" },
-    { id: "streak5", icon: "🔥", name: "Серия 5",        desc: "5 пятёрок подряд" },
-    { id: "streak10",icon: "💥", name: "Серия 10",       desc: "10 пятёрок подряд" },
-    { id: "arseniy", icon: "👑", name: "Арсений",        desc: "Найти пасхалку Арсения" },
-    { id: "teacher", icon: "👨‍🏫", name: "Режим учителя", desc: "Использовать режим учителя" },
-    { id: "hacker",  icon: "💀", name: "Хакер",          desc: "Попытаться поставить Арсению 2 или 3" },
-    { id: "mell",    icon: "🎤", name: "Меллстрой",      desc: "Найти пасхалку Меллстроя" },
-    { id: "night",   icon: "🌙", name: "Полуночник",     desc: "Предсказать после 00:00" },
-    { id: "allsubj", icon: "📚", name: "Эрудит",         desc: "Пройти 10 разных предметов" }
+    { id: "first",       icon: "🎬", name: "Первый шаг",     desc: "Первое предсказание" },
+    { id: "ten",         icon: "🔟", name: "Десятка",        desc: "10 предсказаний" },
+    { id: "fifty",       icon: "🏅", name: "Полтинник",      desc: "50 предсказаний" },
+    { id: "five5",       icon: "⭐", name: "Пятёрочник",     desc: "5 пятёрок" },
+    { id: "five20",      icon: "🌟", name: "Отличник",       desc: "20 пятёрок" },
+    { id: "four10",      icon: "📗", name: "Хорошист",       desc: "10 четвёрок" },
+    { id: "streak5",     icon: "🔥", name: "Серия 5",        desc: "5 пятёрок подряд" },
+    { id: "streak10",    icon: "💥", name: "Серия 10",       desc: "10 пятёрок подряд" },
+    { id: "arseniy",     icon: "👑", name: "Арсений",        desc: "Найти пасхалку Арсения" },
+    { id: "teacher",     icon: "👨‍🏫", name: "Режим учителя", desc: "Использовать режим учителя" },
+    { id: "hacker",      icon: "💀", name: "Хакер",          desc: "Попытаться поставить Арсению 2 или 3" },
+    { id: "mell",        icon: "🎤", name: "Меллстрой",      desc: "Найти пасхалку Меллстроя" },
+    { id: "burmalda",    icon: "🐉", name: "Бурмалда",       desc: "Найти пасхалку Бурмалды" },
+    { id: "konami",      icon: "🎮", name: "Konami",         desc: "Ввести секретный код" },
+    { id: "night",       icon: "🌙", name: "Полуночник",     desc: "Предсказать после 00:00" },
+    { id: "allsubj",     icon: "📚", name: "Эрудит",         desc: "Пройти 10 разных предметов" },
+    { id: "jackpot",     icon: "💰", name: "Джекпот",        desc: "Выбить 5 при шансе 5%" },
+    { id: "marathon",    icon: "🏃", name: "Марафонец",      desc: "100 предсказаний за день" },
+    { id: "cursed",      icon: "👻", name: "Проклятый",      desc: "5 двоек подряд" },
+    { id: "lucky",       icon: "🍀", name: "Счастливчик",    desc: "3 пятёрки подряд" },
+    { id: "silent",      icon: "🤐", name: "Молчун",         desc: "10 пустых нажатий" },
+    { id: "curious",     icon: "🔍", name: "Любопытный",     desc: "Открыть все панели" },
+    { id: "collector",   icon: "🎯", name: "Коллекционер",   desc: "Получить 5, 4, 3, 2" },
+    { id: "duelist",     icon: "⚔️", name: "Дуэлянт",        desc: "Провести первую дуэль" },
+    { id: "sharpshooter",icon: "🎯", name: "Снайпер",        desc: "Угадать 7+ оценок" },
+    { id: "journalist",  icon: "📓", name: "Журналист",      desc: "Открыть классный журнал" }
   ];
 
+  // ============ СОСТОЯНИЕ ============
   let history = [];
   let forcedGrades = {};
   let soundEnabled = false;
   let unlockedAch = {};
   let streak5 = 0;
+  let streak2 = 0;
+  let silentClicks = 0;
+  let todayCount = 0;
+  let todayDate = "";
+  let openedPanels = { history: false, rating: false, ach: false };
+  let gradesCollected = { 5: false, 4: false, 3: false, 2: false };
 
+  // ============ ЭЛЕМЕНТЫ ============
   const nameInput = document.getElementById("nameInput");
   const subjectSelect = document.getElementById("subjectSelect");
   const predictBtn = document.getElementById("predictBtn");
@@ -1014,6 +1025,27 @@
   const ratingBlock = document.getElementById("ratingBlock");
   const ratingList = document.getElementById("ratingList");
 
+  const duelBtn = document.getElementById("duelBtn");
+  const duelModal = document.getElementById("duelModal");
+  const duelName1 = document.getElementById("duelName1");
+  const duelName2 = document.getElementById("duelName2");
+  const duelStart = document.getElementById("duelStart");
+  const duelClose = document.getElementById("duelClose");
+  const duelResult = document.getElementById("duelResult");
+
+  const guessBtn = document.getElementById("guessBtn");
+  const guessModal = document.getElementById("guessModal");
+  const guessClose = document.getElementById("guessClose");
+  const guessGame = document.getElementById("guessGame");
+
+  const journalBtn = document.getElementById("journalBtn");
+  const journalModal = document.getElementById("journalModal");
+  const journalClose = document.getElementById("journalClose");
+  const journalContent = document.getElementById("journalContent");
+
+  const matrixRain = document.getElementById("matrixRain");
+
+  // ============ УТИЛИТЫ ============
   const randomFrom = arr => arr[Math.floor(Math.random() * arr.length)];
 
   function escapeHtml(str) {
@@ -1022,6 +1054,7 @@
     }[m]));
   }
 
+  // ============ ЗВУК ============
   function beep(freq, duration, type = "sine") {
     if (!soundEnabled) return;
     try {
@@ -1047,6 +1080,7 @@
     });
   }
 
+  // ============ ЭФФЕКТЫ ============
   function shakeScreen() {
     document.body.classList.add("shake");
     setTimeout(() => document.body.classList.remove("shake"), 650);
@@ -1078,13 +1112,16 @@
     }
   }
 
+  // ============ ЛОГИКА ОЦЕНКИ ============
   function getGradeWithComment(forced) {
     if (forced === 5) return { grade: 5, comment: randomFrom(COMMENTS_5), cls: "g5" };
     if (forced === 4) return { grade: 4, comment: randomFrom(COMMENTS_4), cls: "g4" };
     if (forced === 3) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
     if (forced === 2) return { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
     const r = Math.random();
-    if (r < 0.30) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
+    if (r < 0.05) return { grade: 5, comment: randomFrom(COMMENTS_5), cls: "g5" };
+    if (r < 0.20) return { grade: 4, comment: randomFrom(COMMENTS_4), cls: "g4" };
+    if (r < 0.55) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
     return { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
   }
 
@@ -1111,21 +1148,39 @@
            l.startsWith("mellstroy");
   }
 
-  function playMellstroy() {
-    const audio = document.getElementById("mellstroySound");
-    if (audio) {
-      try {
-        audio.currentTime = 0;
-        const p = audio.play();
-        if (p && p.catch) {
-          p.catch(e => console.warn("Звук не проигран:", e));
-        }
-      } catch (e) {
-        console.warn("Ошибка звука:", e);
-      }
-    }
+  function isBurmalda(name) {
+    const l = name.toLowerCase().trim();
+    return l === "бурмалда" || l === "бурмалдишь" || l === "бурмалдарики" ||
+           l === "бурмалдар" || l === "бурмалдарик" || l.startsWith("бурмалд");
   }
 
+  function playMellstroy() {
+    const audio = document.getElementById("mellstroySound");
+    if (!audio) return;
+    const tryPlay = () => {
+      try {
+        audio.currentTime = 0; audio.volume = 1;
+        const p = audio.play();
+        if (p && p.catch) p.catch(e => console.warn("Меллстрой звук:", e.name));
+      } catch (e) {}
+    };
+    tryPlay(); setTimeout(tryPlay, 150); setTimeout(tryPlay, 500);
+  }
+
+  function playBurmalda() {
+    const audio = document.getElementById("byrmaldaSound");
+    if (!audio) return;
+    const tryPlay = () => {
+      try {
+        audio.currentTime = 0; audio.volume = 1;
+        const p = audio.play();
+        if (p && p.catch) p.catch(e => console.warn("Бурмалда звук:", e.name));
+      } catch (e) {}
+    };
+    tryPlay(); setTimeout(tryPlay, 150); setTimeout(tryPlay, 500);
+  }
+
+  // ============ ПАСХАЛКИ ============
   function checkEasterEgg(name) {
     const l = name.toLowerCase().trim();
     const eggs = {
@@ -1141,11 +1196,23 @@
       "byme": { g: 5, c: "BYME не оценивают. BYME ОЦЕНИВАЕТ." },
       "госуслуги": { g: 5, c: "Госуслуги всегда 'работают'. По документам." },
       "сбербанк": { g: 5, c: "Сбербанк одобрил пятёрку. Кредит не одобрил." },
-      "налоговая": { g: 5, c: "Налоговая не ставит оценки. Налоговая ставит суммы." }
+      "налоговая": { g: 5, c: "Налоговая не ставит оценки. Налоговая ставит суммы." },
+      "мама": { g: 5, c: "Мама? Она уже видела твой дневник. И всё поняла." },
+      "папа": { g: 5, c: "Папа? Он в курсе. Он всегда в курсе." },
+      "бабушка": { g: 5, c: "Бабушка? Она всегда говорила, что ты умный. Не подведи." },
+      "завуч": { g: 4, c: "Завуч? Он всё видит. Даже то, чего нет." },
+      "психолог": { g: 5, c: "Психолог? Иди к нему, он поможет. Но оценка — 5." },
+      "медсестра": { g: 4, c: "Медсестра? Освобождение не прокатит. Учись." },
+      "столовая": { g: 3, c: "Столовая? Компот закончился. И оценки тоже." },
+      "туалет": { g: 2, c: "Туалет? Отпрашиваться бесполезно. Урок идёт." },
+      "перемена": { g: 5, c: "Перемена? Звонок через 30 секунд. Беги." },
+      "звонок": { g: 3, c: "Звонок? Урок только начался. Сиди." },
+      "каникулы": { g: 5, c: "Каникулы? Учителя тоже хотят. Но тебе — пятёрка." }
     };
     return eggs[l] || null;
   }
 
+  // ============ АЧИВКИ ============
   function unlockAch(id) {
     if (unlockedAch[id]) return;
     unlockedAch[id] = true;
@@ -1184,39 +1251,73 @@
     });
   }
 
+  function checkCurious() {
+    if (openedPanels.history && openedPanels.rating && openedPanels.ach) {
+      unlockAch("curious");
+    }
+  }
+
   function checkAchievements(grade, name) {
     const total = history.length;
     const c5 = history.filter(h => h.grade === 5).length;
     const c4 = history.filter(h => h.grade === 4).length;
+
     if (total >= 1) unlockAch("first");
     if (total >= 10) unlockAch("ten");
     if (total >= 50) unlockAch("fifty");
     if (c5 >= 5) unlockAch("five5");
     if (c5 >= 20) unlockAch("five20");
     if (c4 >= 10) unlockAch("four10");
+
     if (grade === 5) {
-      streak5++;
+      streak5++; streak2 = 0;
       if (streak5 >= 5) unlockAch("streak5");
       if (streak5 >= 10) unlockAch("streak10");
+      if (streak5 >= 3) unlockAch("lucky");
+    } else if (grade === 2) {
+      streak2++; streak5 = 0;
+      if (streak2 >= 5) unlockAch("cursed");
     } else {
-      streak5 = 0;
+      streak5 = 0; streak2 = 0;
     }
+
+    const today = new Date().toDateString();
+    if (todayDate !== today) { todayDate = today; todayCount = 1; }
+    else { todayCount++; }
+    if (todayCount >= 100) unlockAch("marathon");
+
+    gradesCollected[grade] = true;
+    if (gradesCollected[5] && gradesCollected[4] && gradesCollected[3] && gradesCollected[2]) {
+      unlockAch("collector");
+    }
+
+    if (grade === 5 && !isArseniy(name) && !isMellstroy(name) && !isBurmalda(name) &&
+        !isSelfRef(name) && !checkEasterEgg(name)) {
+      if (forcedGrades[name.toLowerCase()] === undefined) {
+        unlockAch("jackpot");
+      }
+    }
+
     if (isArseniy(name)) unlockAch("arseniy");
     if (isMellstroy(name)) unlockAch("mell");
+    if (isBurmalda(name)) unlockAch("burmalda");
+
     const hour = new Date().getHours();
     if (hour >= 0 && hour < 5) unlockAch("night");
+
     const subjects = new Set(history.map(h => h.subject));
     if (subjects.size >= 10) unlockAch("allsubj");
   }
 
+  // ============ ИСТОРИЯ ============
   function loadAll() {
     try {
-      const raw = localStorage.getItem("grade_predictor_history_v7");
+      const raw = localStorage.getItem("grade_predictor_history_v8");
       if (raw) {
         history = JSON.parse(raw);
         if (!Array.isArray(history)) history = [];
       }
-      const rawForced = localStorage.getItem("grade_predictor_forced_v7");
+      const rawForced = localStorage.getItem("grade_predictor_forced_v8");
       if (rawForced) {
         forcedGrades = JSON.parse(rawForced);
         if (typeof forcedGrades !== "object" || forcedGrades === null) forcedGrades = {};
@@ -1224,26 +1325,38 @@
           if (![2, 3, 4, 5].includes(forcedGrades[k])) delete forcedGrades[k];
         });
       }
-      const rawAch = localStorage.getItem("grade_predictor_ach_v7");
+      const rawAch = localStorage.getItem("grade_predictor_ach_v8");
       if (rawAch) {
         unlockedAch = JSON.parse(rawAch);
         if (typeof unlockedAch !== "object" || unlockedAch === null) unlockedAch = {};
       }
-      const rawTheme = localStorage.getItem("grade_predictor_theme_v7");
+      const rawTheme = localStorage.getItem("grade_predictor_theme_v8");
       if (rawTheme === "light") document.body.classList.add("light");
+      const rawStats = localStorage.getItem("grade_predictor_stats_v8");
+      if (rawStats) {
+        const s = JSON.parse(rawStats);
+        streak5 = s.streak5 || 0;
+        streak2 = s.streak2 || 0;
+        silentClicks = s.silentClicks || 0;
+        todayCount = s.todayCount || 0;
+        todayDate = s.todayDate || "";
+        openedPanels = s.openedPanels || { history: false, rating: false, ach: false };
+        gradesCollected = s.gradesCollected || { 5: false, 4: false, 3: false, 2: false };
+      }
     } catch (e) {
-      history = [];
-      forcedGrades = {};
-      unlockedAch = {};
+      history = []; forcedGrades = {}; unlockedAch = {};
     }
   }
 
   function saveAll() {
     try {
-      localStorage.setItem("grade_predictor_history_v7", JSON.stringify(history));
-      localStorage.setItem("grade_predictor_forced_v7", JSON.stringify(forcedGrades));
-      localStorage.setItem("grade_predictor_ach_v7", JSON.stringify(unlockedAch));
-      localStorage.setItem("grade_predictor_theme_v7", document.body.classList.contains("light") ? "light" : "dark");
+      localStorage.setItem("grade_predictor_history_v8", JSON.stringify(history));
+      localStorage.setItem("grade_predictor_forced_v8", JSON.stringify(forcedGrades));
+      localStorage.setItem("grade_predictor_ach_v8", JSON.stringify(unlockedAch));
+      localStorage.setItem("grade_predictor_theme_v8", document.body.classList.contains("light") ? "light" : "dark");
+      localStorage.setItem("grade_predictor_stats_v8", JSON.stringify({
+        streak5, streak2, silentClicks, todayCount, todayDate, openedPanels, gradesCollected
+      }));
     } catch (e) {}
   }
 
@@ -1254,6 +1367,7 @@
       return;
     }
     historyBlock.classList.add("show");
+    if (!openedPanels.history) { openedPanels.history = true; checkCurious(); }
     historyList.innerHTML = "";
     history.slice(-10).reverse().forEach(item => {
       const li = document.createElement("li");
@@ -1270,10 +1384,8 @@
       else if (h.grade === 3) c3++;
       else c2++;
     });
-    stat5.textContent = c5;
-    stat4.textContent = c4;
-    stat3.textContent = c3;
-    stat2.textContent = c2;
+    stat5.textContent = c5; stat4.textContent = c4;
+    stat3.textContent = c3; stat2.textContent = c2;
     renderRating();
   }
 
@@ -1293,6 +1405,7 @@
       return;
     }
     ratingBlock.classList.add("show");
+    if (!openedPanels.rating) { openedPanels.rating = true; checkCurious(); }
     ratingList.innerHTML = "";
     arr.slice(0, 10).forEach(x => {
       const li = document.createElement("li");
@@ -1305,6 +1418,7 @@
     });
   }
 
+  // ============ ПРЕДСКАЗАНИЕ ============
   function pickSubject() {
     let subject = subjectSelect.value;
     if (subject === "random") {
@@ -1347,14 +1461,24 @@
       resultDiv.innerHTML = '⚠️ Введи имя, умник. ИИ не умеет читать мысли (пока).';
       beep(220, 0.15);
       shakeScreen();
+      silentClicks++;
+      if (silentClicks >= 10) unlockAch("silent");
       return;
-    }
+    } else { silentClicks = 0; }
 
     if (isMellstroy(name)) {
       playMellstroy();
       const subject = pickSubject();
       showResult(name, subject, 5, COMMENT_MELLSTROY, "g5");
       unlockAch("mell");
+      return;
+    }
+
+    if (isBurmalda(name)) {
+      playBurmalda();
+      const subject = pickSubject();
+      showResult(name, subject, 5, COMMENT_BURMALDA, "g5");
+      unlockAch("burmalda");
       return;
     }
 
@@ -1429,17 +1553,10 @@
     luckyBtn.disabled = false;
     predictBtn.textContent = "Предсказать ещё раз";
     setBgForGrade(grade);
-    if (grade === 5) {
-      fanfare();
-      spawnConfetti(50);
-    } else if (grade === 4) {
-      beep(660, 0.15);
-    } else if (grade === 3) {
-      beep(440, 0.15);
-    } else {
-      beep(200, 0.3);
-      shakeScreen();
-    }
+    if (grade === 5) { fanfare(); spawnConfetti(50); }
+    else if (grade === 4) beep(660, 0.15);
+    else if (grade === 3) beep(440, 0.15);
+    else { beep(200, 0.3); shakeScreen(); }
     history.push({ name, subject, grade, cls, ts: Date.now() });
     if (history.length > 100) history = history.slice(-100);
     saveAll();
@@ -1447,15 +1564,16 @@
     checkAchievements(grade, name);
   }
 
+  // ============ СБРОС ============
   function resetAll() {
     if (!confirm("Сбросить всю историю, статистику, ачивки и режим учителя?")) return;
-    history = [];
-    forcedGrades = {};
-    unlockedAch = {};
-    streak5 = 0;
+    history = []; forcedGrades = {}; unlockedAch = {};
+    streak5 = 0; streak2 = 0; silentClicks = 0;
+    todayCount = 0; todayDate = "";
+    openedPanels = { history: false, rating: false, ach: false };
+    gradesCollected = { 5: false, 4: false, 3: false, 2: false };
     saveAll();
-    renderHistory();
-    renderAch();
+    renderHistory(); renderAch();
     resultDiv.classList.remove("show");
     resultDiv.innerHTML = "";
     resetBg();
@@ -1480,19 +1598,13 @@
     teacherName.value = "";
     teacherGrade.value = "5";
   }
-
-  function closeTeacherModal() {
-    teacherModal.classList.remove("show");
-  }
+  function closeTeacherModal() { teacherModal.classList.remove("show"); }
 
   function saveTeacherGrade() {
     const name = teacherName.value.trim().toLowerCase();
     const grade = parseInt(teacherGrade.value, 10);
     if (!name) { alert("Введи имя!"); return; }
-    if (![2, 3, 4, 5].includes(grade)) {
-      alert("Оценка должна быть 2, 3, 4 или 5!");
-      return;
-    }
+    if (![2, 3, 4, 5].includes(grade)) { alert("Оценка должна быть 2, 3, 4 или 5!"); return; }
     forcedGrades[name] = grade;
     saveAll();
     unlockAch("teacher");
@@ -1528,9 +1640,7 @@
     const blob = new Blob([text], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
+    a.href = url; a.download = filename; a.click();
     URL.revokeObjectURL(url);
   }
 
@@ -1552,8 +1662,423 @@
   function toggleAchPanel() {
     achBlock.classList.toggle("show");
     achBtn.textContent = achBlock.classList.contains("show") ? "🏆 Скрыть" : "🏆 Ачивки";
+    if (achBlock.classList.contains("show") && !openedPanels.ach) {
+      openedPanels.ach = true;
+      checkCurious();
+    }
   }
 
+  // ============ ДУЭЛЬ ============
+  function openDuelModal() {
+    duelModal.classList.add("show");
+    duelName1.value = "";
+    duelName2.value = "";
+    duelResult.innerHTML = "";
+  }
+  function closeDuelModal() { duelModal.classList.remove("show"); }
+
+  function getGradeForName(name) {
+    if (isMellstroy(name)) return { grade: 5, cls: "g5" };
+    if (isBurmalda(name)) return { grade: 5, cls: "g5" };
+    const egg = checkEasterEgg(name);
+    if (egg) return { grade: egg.g, cls: "g" + egg.g };
+    if (isArseniy(name)) {
+      const r = Math.random();
+      if (r < 0.85) return { grade: 5, cls: "g5" };
+      return { grade: 4, cls: "g4" };
+    }
+    if (isSelfRef(name)) {
+      const r = Math.random();
+      if (r < 0.30) return { grade: 3, cls: "g3" };
+      return { grade: 2, cls: "g2" };
+    }
+    const r = Math.random();
+    if (r < 0.05) return { grade: 5, cls: "g5" };
+    if (r < 0.20) return { grade: 4, cls: "g4" };
+    if (r < 0.55) return { grade: 3, cls: "g3" };
+    return { grade: 2, cls: "g2" };
+  }
+
+  function startDuel() {
+    const n1 = duelName1.value.trim();
+    const n2 = duelName2.value.trim();
+    if (!n1 || !n2) {
+      duelResult.innerHTML = '<div style="color:var(--g2);text-align:center;margin-top:14px;">Введи оба имени!</div>';
+      return;
+    }
+    const r1 = getGradeForName(n1);
+    const r2 = getGradeForName(n2);
+    let winnerHTML = "";
+    if (r1.grade > r2.grade) {
+      winnerHTML = `<div style="text-align:center;font-size:18px;font-weight:900;color:var(--g5);margin-top:14px;">👑 Победитель: ${escapeHtml(n1)}</div>`;
+      spawnConfetti(30); fanfare();
+    } else if (r2.grade > r1.grade) {
+      winnerHTML = `<div style="text-align:center;font-size:18px;font-weight:900;color:var(--g5);margin-top:14px;">👑 Победитель: ${escapeHtml(n2)}</div>`;
+      spawnConfetti(30); fanfare();
+    } else {
+      winnerHTML = `<div style="text-align:center;font-size:18px;font-weight:900;color:var(--g4);margin-top:14px;">🤝 Ничья!</div>`;
+    }
+    duelResult.innerHTML = `
+      <div style="display:flex;gap:10px;justify-content:space-between;margin-top:14px;">
+        <div style="flex:1;text-align:center;padding:14px;background:rgba(123,47,247,0.1);border-radius:12px;">
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">${escapeHtml(n1)}</div>
+          <div class="grade ${r1.cls}" style="font-size:44px;padding:4px 16px;">${r1.grade}</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:14px;background:rgba(123,47,247,0.1);border-radius:12px;">
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">${escapeHtml(n2)}</div>
+          <div class="grade ${r2.cls}" style="font-size:44px;padding:4px 16px;">${r2.grade}</div>
+        </div>
+      </div>
+      ${winnerHTML}
+    `;
+    beep(660, 0.15);
+    unlockAch("duelist");
+  }
+
+  // ============ УГАДАЙ ОЦЕНКУ ============
+  let guessState = { round: 1, score: 0, currentName: "", currentGrade: 0, answered: false, totalRounds: 10 };
+
+  function openGuessModal() {
+    guessModal.classList.add("show");
+    guessGame.innerHTML = `
+      <div style="font-size:14px;margin-bottom:10px;">Раунд: <b id="guessRound">1</b> / 10</div>
+      <div style="font-size:14px;margin-bottom:10px;">Очки: <b id="guessScore">0</b></div>
+      <div style="font-size:18px;font-weight:800;margin:14px 0;text-align:center;" id="guessName">—</div>
+      <div class="btn-row" style="flex-wrap:wrap;">
+        <button class="btn-secondary" data-guess="5">5</button>
+        <button class="btn-secondary" data-guess="4">4</button>
+        <button class="btn-secondary" data-guess="3">3</button>
+        <button class="btn-secondary" data-guess="2">2</button>
+      </div>
+      <div id="guessFeedback" style="margin-top:14px;text-align:center;font-size:14px;"></div>
+    `;
+    bindGuessButtons();
+    startGuessGame();
+  }
+
+  function closeGuessModal() { guessModal.classList.remove("show"); }
+
+  function bindGuessButtons() {
+    document.querySelectorAll("[data-guess]").forEach(btn => {
+      btn.addEventListener("click", () => handleGuess(parseInt(btn.dataset.guess, 10)));
+    });
+  }
+
+  function startGuessGame() {
+    guessState = { round: 1, score: 0, currentName: "", currentGrade: 0, answered: false, totalRounds: 10 };
+    nextGuessRound();
+  }
+
+  function nextGuessRound() {
+    const guessRound = document.getElementById("guessRound");
+    const guessScore = document.getElementById("guessScore");
+    const guessName = document.getElementById("guessName");
+    const guessFeedback = document.getElementById("guessFeedback");
+    if (!guessRound) return;
+    if (guessState.round > guessState.totalRounds) { endGuessGame(); return; }
+    guessState.answered = false;
+    guessState.currentName = randomFrom(RANDOM_NAMES);
+    const r = getGradeForName(guessState.currentName);
+    guessState.currentGrade = r.grade;
+    guessRound.textContent = guessState.round;
+    guessScore.textContent = guessState.score;
+    guessName.textContent = guessState.currentName;
+    guessFeedback.textContent = "";
+    document.querySelectorAll("[data-guess]").forEach(btn => {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+    });
+  }
+
+  function handleGuess(guess) {
+    if (guessState.answered) return;
+    guessState.answered = true;
+    document.querySelectorAll("[data-guess]").forEach(btn => {
+      btn.disabled = true;
+      btn.style.opacity = "0.5";
+    });
+    const guessFeedback = document.getElementById("guessFeedback");
+    const guessScore = document.getElementById("guessScore");
+    const correct = guess === guessState.currentGrade;
+    if (correct) {
+      guessState.score++;
+      guessFeedback.innerHTML = `<span style="color:var(--g5);">✅ Правильно! Это была ${guessState.currentGrade}.</span>`;
+      beep(880, 0.15, "triangle");
+    } else {
+      guessFeedback.innerHTML = `<span style="color:var(--g2);">❌ Не угадал. Была ${guessState.currentGrade}.</span>`;
+      beep(220, 0.2);
+    }
+    guessScore.textContent = guessState.score;
+    guessState.round++;
+    setTimeout(() => {
+      if (guessState.round > guessState.totalRounds) endGuessGame();
+      else nextGuessRound();
+    }, 1500);
+  }
+
+  function endGuessGame() {
+    const score = guessState.score;
+    const total = guessState.totalRounds;
+    let verdict = "";
+    if (score === total) verdict = "🏆 Идеально! Ты — ясновидящий.";
+    else if (score >= 7) verdict = "🔥 Отлично! Почти экстрасенс.";
+    else if (score >= 4) verdict = "🙂 Неплохо. Но можно лучше.";
+    else verdict = "💀 Слабовато. Попробуй ещё.";
+    guessGame.innerHTML = `
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:42px;margin-bottom:10px;">🎯</div>
+        <div style="font-size:20px;font-weight:900;margin-bottom:8px;">Игра окончена!</div>
+        <div style="font-size:16px;margin-bottom:14px;">Твой счёт: <b style="color:var(--accent1);">${score} / ${total}</b></div>
+        <div style="font-size:14px;color:var(--text-dim);margin-bottom:16px;">${verdict}</div>
+        <button id="guessRestart" class="btn-secondary" style="width:auto;">Играть снова</button>
+      </div>
+    `;
+    document.getElementById("guessRestart").addEventListener("click", () => openGuessModal());
+    if (score >= 7) { spawnConfetti(40); fanfare(); unlockAch("sharpshooter"); }
+  }
+
+  // ============ ЖУРНАЛ ============
+  function openJournalModal() {
+    journalModal.classList.add("show");
+    renderJournal();
+    unlockAch("journalist");
+  }
+  function closeJournalModal() { journalModal.classList.remove("show"); }
+
+  function renderJournal() {
+    if (history.length === 0) {
+      journalContent.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:20px;">Журнал пуст. Сделай первое предсказание!</div>';
+      return;
+    }
+    const map = {};
+    history.forEach(h => {
+      const key = h.name.toLowerCase();
+      if (!map[key]) map[key] = { name: h.name, grades: [], last: null };
+      map[key].grades.push(h.grade);
+      if (!map[key].last || h.ts > map[key].last.ts) map[key].last = h;
+    });
+    const arr = Object.values(map).map(x => ({
+      name: x.name,
+      count: x.grades.length,
+      avg: x.grades.reduce((a, b) => a + b, 0) / x.grades.length,
+      last: x.last.grade,
+      lastCls: x.last.cls
+    })).sort((a, b) => b.avg - a.avg);
+
+    let html = `
+      <div style="max-height:400px;overflow-y:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:rgba(123,47,247,0.15);">
+              <th style="padding:8px;text-align:left;">Имя</th>
+              <th style="padding:8px;text-align:center;">Кол-во</th>
+              <th style="padding:8px;text-align:center;">Средний</th>
+              <th style="padding:8px;text-align:center;">Последняя</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+    arr.forEach(x => {
+      const avgCls = x.avg >= 4.5 ? "high" : x.avg >= 3.5 ? "mid" : x.avg >= 2.5 ? "low" : "bad";
+      html += `
+        <tr style="border-bottom:1px solid rgba(123,47,247,0.1);">
+          <td style="padding:8px;">${escapeHtml(x.name)}</td>
+          <td style="padding:8px;text-align:center;color:var(--text-dim);">${x.count}</td>
+          <td style="padding:8px;text-align:center;font-weight:900;" class="avg ${avgCls}">${x.avg.toFixed(2)}</td>
+          <td style="padding:8px;text-align:center;"><span class="g ${x.lastCls}" style="font-weight:900;font-size:16px;">${x.last}</span></td>
+        </tr>
+      `;
+    });
+    html += `</tbody></table></div>`;
+    html += `<div style="margin-top:14px;text-align:center;font-size:12px;color:var(--text-dim);">Всего имён: ${arr.length} · Всего предсказаний: ${history.length}</div>`;
+    journalContent.innerHTML = html;
+  }
+
+  // ============ KONAMI CODE ============
+  const KONAMI_CODE = [
+    "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+    "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
+    "b", "a"
+  ];
+  let konamiProgress = 0;
+  let matrixActive = false;
+  let matrixRainInterval = null;
+  const MATRIX_CHARS = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF";
+
+  function checkKonami(e) {
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (key === KONAMI_CODE[konamiProgress]) {
+      konamiProgress++;
+      if (konamiProgress === KONAMI_CODE.length) {
+        konamiProgress = 0;
+        activateMatrix();
+      }
+    } else {
+      konamiProgress = (key === KONAMI_CODE[0]) ? 1 : 0;
+    }
+  }
+
+  function activateMatrix() {
+    matrixActive = !matrixActive;
+    if (matrixActive) {
+      document.body.classList.add("matrix");
+      startMatrixRain();
+      showKonamiToast("🎮 KONAMI CODE!", "Секретная тема активирована");
+      spawnConfetti(60);
+      fanfare();
+      unlockAch("konami");
+    } else {
+      document.body.classList.remove("matrix");
+      stopMatrixRain();
+      showKonamiToast("🎮 KONAMI CODE!", "Секретная тема отключена");
+    }
+  }
+
+  function showKonamiToast(title, sub) {
+    const t = document.createElement("div");
+    t.className = "konami-toast";
+    t.innerHTML = `${title}<div class="sub">${sub}</div>`;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add("show"), 50);
+    setTimeout(() => {
+      t.classList.remove("show");
+      setTimeout(() => t.remove(), 600);
+    }, 2500);
+  }
+
+  function startMatrixRain() {
+    const rain = document.getElementById("matrixRain");
+    if (!rain) return;
+    rain.innerHTML = "";
+    const colCount = Math.floor(window.innerWidth / 30);
+    for (let i = 0; i < colCount; i++) {
+      const col = document.createElement("div");
+      col.className = "matrix-col";
+      col.style.left = (i * 30) + "px";
+      col.style.animationDuration = (3 + Math.random() * 4) + "s";
+      col.style.animationDelay = (Math.random() * 3) + "s";
+      col.style.fontSize = (12 + Math.random() * 8) + "px";
+      let text = "";
+      const len = 20 + Math.floor(Math.random() * 30);
+      for (let j = 0; j < len; j++) {
+        text += MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+      }
+      col.textContent = text;
+      rain.appendChild(col);
+    }
+    matrixRainInterval = setInterval(() => {
+      if (!matrixActive) return;
+      document.querySelectorAll(".matrix-col").forEach(col => {
+        const chars = col.textContent.split("");
+        const idx = Math.floor(Math.random() * chars.length);
+        chars[idx] = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+        col.textContent = chars.join("");
+      });
+    }, 100);
+  }
+
+  function stopMatrixRain() {
+    const rain = document.getElementById("matrixRain");
+    if (rain) rain.innerHTML = "";
+    if (matrixRainInterval) {
+      clearInterval(matrixRainInterval);
+      matrixRainInterval = null;
+    }
+  }
+
+  // ============ ДОЛГИЙ ТАП / ДВОЙНОЙ КЛИК ПО АЧИВКЕ ============
+  function toggleAchDesc(achEl) {
+    const descEl = achEl.querySelector(".ach-desc");
+    if (!descEl) return;
+    const isHidden = descEl.style.display === "none";
+    descEl.style.display = isHidden ? "block" : "none";
+    beep(600, 0.1);
+    if (navigator.vibrate) navigator.vibrate(30);
+  }
+
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  if (isTouchDevice) {
+    let longPressTimer = null;
+    let longPressTriggered = false;
+
+    achGrid.addEventListener("pointerdown", (e) => {
+      const achEl = e.target.closest(".ach");
+      if (!achEl) return;
+      longPressTriggered = false;
+      longPressTimer = setTimeout(() => {
+        longPressTriggered = true;
+        toggleAchDesc(achEl);
+      }, 500);
+    });
+    achGrid.addEventListener("pointerup", () => clearTimeout(longPressTimer));
+    achGrid.addEventListener("pointermove", () => clearTimeout(longPressTimer));
+    achGrid.addEventListener("pointercancel", () => clearTimeout(longPressTimer));
+    achGrid.addEventListener("pointerleave", () => clearTimeout(longPressTimer));
+
+    let lastTap = 0;
+    achGrid.addEventListener("pointerup", (e) => {
+      const achEl = e.target.closest(".ach");
+      if (!achEl || longPressTriggered) return;
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        toggleAchDesc(achEl);
+        lastTap = 0;
+      } else {
+        lastTap = now;
+      }
+    });
+  } else {
+    achGrid.addEventListener("dblclick", (e) => {
+      const achEl = e.target.closest(".ach");
+      if (!achEl) return;
+      toggleAchDesc(achEl);
+    });
+
+    let longPressTimer = null;
+    achGrid.addEventListener("mousedown", (e) => {
+      const achEl = e.target.closest(".ach");
+      if (!achEl) return;
+      longPressTimer = setTimeout(() => toggleAchDesc(achEl), 500);
+    });
+    achGrid.addEventListener("mouseup", () => clearTimeout(longPressTimer));
+    achGrid.addEventListener("mouseleave", () => clearTimeout(longPressTimer));
+  }
+
+  // ============ ВИЗУАЛЬНЫЕ ФИШКИ ============
+  resultDiv.addEventListener("dblclick", (e) => {
+    const gradeEl = e.target.closest(".grade");
+    if (gradeEl) { spawnConfetti(30); beep(880, 0.15, "triangle"); }
+  });
+
+  // ============ РАЗБЛОКИРОВКА АУДИО ============
+  (function unlockAudio() {
+    const audios = [
+      document.getElementById("mellstroySound"),
+      document.getElementById("byrmaldaSound")
+    ].filter(Boolean);
+    let unlocked = false;
+    function tryUnlock() {
+      if (unlocked) return;
+      audios.forEach(audio => {
+        audio.volume = 0;
+        const p = audio.play();
+        if (p && p.then) {
+          p.then(() => {
+            audio.pause(); audio.currentTime = 0; audio.volume = 1;
+          }).catch(() => { audio.volume = 1; });
+        } else { audio.volume = 1; }
+      });
+      unlocked = true;
+    }
+    document.addEventListener("touchstart", tryUnlock, { passive: true });
+    document.addEventListener("click", tryUnlock);
+    document.addEventListener("touchend", tryUnlock, { passive: true });
+  })();
+
+  // ============ СЛУШАТЕЛИ ============
+  document.addEventListener("keydown", checkKonami);
   predictBtn.addEventListener("click", predict);
   luckyBtn.addEventListener("click", luckyPredict);
   randomNameBtn.addEventListener("click", setRandomName);
@@ -1569,6 +2094,20 @@
   nameInput.addEventListener("keydown", e => { if (e.key === "Enter") predict(); });
   teacherModal.addEventListener("click", e => { if (e.target === teacherModal) closeTeacherModal(); });
 
+  duelBtn.addEventListener("click", openDuelModal);
+  duelStart.addEventListener("click", startDuel);
+  duelClose.addEventListener("click", closeDuelModal);
+  duelModal.addEventListener("click", e => { if (e.target === duelModal) closeDuelModal(); });
+
+  guessBtn.addEventListener("click", openGuessModal);
+  guessClose.addEventListener("click", closeGuessModal);
+  guessModal.addEventListener("click", e => { if (e.target === guessModal) closeGuessModal(); });
+
+  journalBtn.addEventListener("click", openJournalModal);
+  journalClose.addEventListener("click", closeJournalModal);
+  journalModal.addEventListener("click", e => { if (e.target === journalModal) closeJournalModal(); });
+
+  // ============ СТАРТ ============
   loadAll();
   renderHistory();
   renderAch();
