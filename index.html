@@ -1119,11 +1119,10 @@
     if (forced === 3) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
     if (forced === 2) return { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
     const r = Math.random();
-    if (r < 0.05) return { grade: 5, comment: randomFrom(COMMENTS_5), cls: "g5" };
-    if (r < 0.20) return { grade: 4, comment: randomFrom(COMMENTS_4), cls: "g4" };
-    if (r < 0.55) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
+    if (r < 0.10) return { grade: 5, comment: randomFrom(COMMENTS_5), cls: "g5" };
+    if (r < 0.60) return { grade: 4, comment: randomFrom(COMMENTS_4), cls: "g4" };
+    if (r < 0.80) return { grade: 3, comment: randomFrom(COMMENTS_3), cls: "g3" };
     return { grade: 2, comment: randomFrom(COMMENTS_2), cls: "g2" };
-  }
 
   function getArseniyGrade() {
     const r = Math.random();
