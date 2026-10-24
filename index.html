@@ -426,6 +426,16 @@
   .rating-list li .avg.low  { color: var(--g3); text-shadow: 0 0 10px var(--g3); }
   .rating-list li .avg.bad  { color: var(--g2); text-shadow: 0 0 10px var(--g2); }
 
+  /* Цвета для журнала (таблица вне .rating-list / .history-list) */
+  .avg.high { color: var(--g5); text-shadow: 0 0 10px var(--g5); }
+  .avg.mid  { color: var(--g4); text-shadow: 0 0 10px var(--g4); }
+  .avg.low  { color: var(--g3); text-shadow: 0 0 10px var(--g3); }
+  .avg.bad  { color: var(--g2); text-shadow: 0 0 10px var(--g2); }
+  .g.g5 { color: var(--g5); text-shadow: 0 0 10px var(--g5); }
+  .g.g4 { color: var(--g4); text-shadow: 0 0 10px var(--g4); }
+  .g.g3 { color: var(--g3); text-shadow: 0 0 10px var(--g3); }
+  .g.g2 { color: var(--g2); text-shadow: 0 0 10px var(--g2); }
+
   .ach-grid { display: flex; flex-direction: column; gap: 8px; }
 
   .ach {
@@ -448,6 +458,8 @@
     transform: translateY(-50%);
     font-size: 18px; opacity: 0.7; filter: blur(0);
   }
+
+  .ach.revealed { filter: blur(0); opacity: 1; }
 
   .ach.unlocked {
     filter: blur(0); opacity: 1; cursor: default;
@@ -705,7 +717,7 @@
       <option value="Геометрия">Геометрия</option>
       <option value="Алгебра">Алгебра</option>
       <option value="Обществознание">Обществознание</option>
-      <option value="Физическая культура">Физкультура</option>
+      <option value="Физкультура">Физкультура</option>
       <option value="ОБЖ">ОБЖ</option>
       <option value="Технология">Технология</option>
       <option value="Музыка">Музыка</option>
@@ -966,7 +978,7 @@
     { id: "konami",      icon: "🎮", name: "Konami",         desc: "Ввести секретный код" },
     { id: "night",       icon: "🌙", name: "Полуночник",     desc: "Предсказать после 00:00" },
     { id: "allsubj",     icon: "📚", name: "Эрудит",         desc: "Пройти 10 разных предметов" },
-    { id: "jackpot",     icon: "💰", name: "Джекпот",        desc: "Выбить 5 при шансе 5%" },
+    { id: "jackpot",     icon: "💰", name: "Джекпот",        desc: "Выбить 5 при шансе 10%" },
     { id: "marathon",    icon: "🏃", name: "Марафонец",      desc: "100 предсказаний за день" },
     { id: "cursed",      icon: "👻", name: "Проклятый",      desc: "5 двоек подряд" },
     { id: "lucky",       icon: "🍀", name: "Счастливчик",    desc: "3 пятёрки подряд" },
@@ -990,6 +1002,11 @@
   let todayDate = "";
   let openedPanels = { history: false, rating: false, ach: false };
   let gradesCollected = { 5: false, 4: false, 3: false, 2: false };
+  let lastWasForced = false;   // оценка задана учителем (для ачивки «Джекпот»)
+  let guessTimer = null;       // таймер перехода между раундами «Угадай»
+  let audioCtx = null;         // один общий AudioContext
+  let toastQueue = [];
+  let toastBusy = false;
 
   // ============ ЭЛЕМЕНТЫ ============
   const nameInput = document.getElementById("nameInput");
@@ -1058,7 +1075,9 @@
   function beep(freq, duration, type = "sine") {
     if (!soundEnabled) return;
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = audioCtx;
+      if (ctx.state === "suspended") ctx.resume();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = type;
@@ -1157,27 +1176,32 @@
   function playMellstroy() {
     const audio = document.getElementById("mellstroySound");
     if (!audio) return;
-    const tryPlay = () => {
-      try {
-        audio.currentTime = 0; audio.volume = 1;
-        const p = audio.play();
-        if (p && p.catch) p.catch(e => console.warn("Меллстрой звук:", e.name));
-      } catch (e) {}
-    };
-    tryPlay(); setTimeout(tryPlay, 150); setTimeout(tryPlay, 500);
+    playOnce(audio, "Меллстрой звук:");
+  }
+
+  // Один запуск с одной повторной попыткой только если звук не пошёл
+  function playOnce(audio, label) {
+    try {
+      audio.muted = false; audio.volume = 1;
+      audio.currentTime = 0;
+      const p = audio.play();
+      if (p && p.catch) {
+        p.catch(e => {
+          console.warn(label, e.name);
+          setTimeout(() => {
+            if (audio.paused) {
+              try { audio.play().catch(() => {}); } catch (err) {}
+            }
+          }, 300);
+        });
+      }
+    } catch (e) {}
   }
 
   function playBurmalda() {
     const audio = document.getElementById("byrmaldaSound");
     if (!audio) return;
-    const tryPlay = () => {
-      try {
-        audio.currentTime = 0; audio.volume = 1;
-        const p = audio.play();
-        if (p && p.catch) p.catch(e => console.warn("Бурмалда звук:", e.name));
-      } catch (e) {}
-    };
-    tryPlay(); setTimeout(tryPlay, 150); setTimeout(tryPlay, 500);
+    playOnce(audio, "Бурмалда звук:");
   }
 
   // ============ ПАСХАЛКИ ============
@@ -1223,7 +1247,16 @@
     beep(1000, 0.2, "triangle");
   }
 
+  // Тосты показываются по очереди, чтобы не накладываться друг на друга
   function showToast(icon, name, desc) {
+    toastQueue.push({ icon, name, desc });
+    processToastQueue();
+  }
+
+  function processToastQueue() {
+    if (toastBusy || toastQueue.length === 0) return;
+    toastBusy = true;
+    const { icon, name, desc } = toastQueue.shift();
     const t = document.createElement("div");
     t.className = "toast";
     t.innerHTML = `<span class="toast-icon">${icon}</span><b>Ачивка!</b> ${escapeHtml(name)}<small>${escapeHtml(desc)}</small>`;
@@ -1231,8 +1264,12 @@
     setTimeout(() => t.classList.add("show"), 50);
     setTimeout(() => {
       t.classList.remove("show");
-      setTimeout(() => t.remove(), 500);
-    }, 3500);
+      setTimeout(() => {
+        t.remove();
+        toastBusy = false;
+        processToastQueue();
+      }, 500);
+    }, 2500);
   }
 
   function renderAch() {
@@ -1293,7 +1330,7 @@
 
     if (grade === 5 && !isArseniy(name) && !isMellstroy(name) && !isBurmalda(name) &&
         !isSelfRef(name) && !checkEasterEgg(name)) {
-      if (forcedGrades[name.toLowerCase()] === undefined) {
+      if (!lastWasForced) {
         unlockAch("jackpot");
       }
     }
@@ -1316,6 +1353,11 @@
       if (raw) {
         history = JSON.parse(raw);
         if (!Array.isArray(history)) history = [];
+        // Отбрасываем битые записи и пересобираем cls из оценки
+        history = history
+          .filter(h => h && typeof h.name === "string" && typeof h.subject === "string" &&
+                       [2, 3, 4, 5].includes(h.grade))
+          .map(h => ({ name: h.name, subject: h.subject, grade: h.grade, cls: "g" + h.grade, ts: Number(h.ts) || Date.now() }));
       }
       const rawForced = localStorage.getItem("grade_predictor_forced_v8");
       if (rawForced) {
@@ -1331,7 +1373,10 @@
         if (typeof unlockedAch !== "object" || unlockedAch === null) unlockedAch = {};
       }
       const rawTheme = localStorage.getItem("grade_predictor_theme_v8");
-      if (rawTheme === "light") document.body.classList.add("light");
+      if (rawTheme === "light") {
+        document.body.classList.add("light");
+        themeBtn.textContent = "☀️ Тема";
+      }
       const rawStats = localStorage.getItem("grade_predictor_stats_v8");
       if (rawStats) {
         const s = JSON.parse(rawStats);
@@ -1454,6 +1499,8 @@
   }
 
   function predict() {
+    if (predictBtn.disabled) return;   // уже идёт предсказание (например, Enter во время анимации)
+    lastWasForced = false;
     const name = nameInput.value.trim();
     if (!name) {
       resetBg();
@@ -1504,6 +1551,7 @@
         } else {
           res = getArseniyGrade();
         }
+        lastWasForced = forced !== undefined;
         if (forced !== undefined) {
           delete forcedGrades[name.toLowerCase()];
           saveAll();
@@ -1528,6 +1576,7 @@
       } else {
         res = getGradeWithComment();
       }
+      lastWasForced = forced !== undefined;
       if (forced !== undefined) {
         delete forcedGrades[lower];
         saveAll();
@@ -1616,11 +1665,15 @@
   function exportCsv() {
     if (history.length === 0) { alert("История пуста!"); return; }
     const lines = ["Дата,Имя,Предмет,Оценка"];
+    // Экранирование поля CSV + защита от формул Excel (=, +, -, @ в начале)
+    const csvField = value => {
+      let s = String(value);
+      if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+      return `"${s.replace(/"/g, '""')}"`;
+    };
     history.forEach(h => {
       const d = new Date(h.ts).toLocaleString();
-      const safeName = `"${h.name.replace(/"/g, '""')}"`;
-      const safeSubj = `"${h.subject.replace(/"/g, '""')}"`;
-      lines.push(`${d},${safeName},${safeSubj},${h.grade}`);
+      lines.push(`${csvField(d)},${csvField(h.name)},${csvField(h.subject)},${h.grade}`);
     });
     const text = "\uFEFF" + lines.join("\n");
     downloadFile(text, "predictions.csv", "text/csv;charset=utf-8");
@@ -1640,8 +1693,11 @@
     const blob = new Blob([text], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = filename;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 1000);
   }
 
   function setRandomName() {
@@ -1692,10 +1748,11 @@
       if (r < 0.30) return { grade: 3, cls: "g3" };
       return { grade: 2, cls: "g2" };
     }
+    // Те же шансы, что и в основном предсказании: 10 / 50 / 20 / 20
     const r = Math.random();
-    if (r < 0.05) return { grade: 5, cls: "g5" };
-    if (r < 0.20) return { grade: 4, cls: "g4" };
-    if (r < 0.55) return { grade: 3, cls: "g3" };
+    if (r < 0.10) return { grade: 5, cls: "g5" };
+    if (r < 0.60) return { grade: 4, cls: "g4" };
+    if (r < 0.80) return { grade: 3, cls: "g3" };
     return { grade: 2, cls: "g2" };
   }
 
@@ -1739,6 +1796,7 @@
   let guessState = { round: 1, score: 0, currentName: "", currentGrade: 0, answered: false, totalRounds: 10 };
 
   function openGuessModal() {
+    clearTimeout(guessTimer);
     guessModal.classList.add("show");
     guessGame.innerHTML = `
       <div style="font-size:14px;margin-bottom:10px;">Раунд: <b id="guessRound">1</b> / 10</div>
@@ -1756,7 +1814,10 @@
     startGuessGame();
   }
 
-  function closeGuessModal() { guessModal.classList.remove("show"); }
+  function closeGuessModal() {
+    clearTimeout(guessTimer);
+    guessModal.classList.remove("show");
+  }
 
   function bindGuessButtons() {
     document.querySelectorAll("[data-guess]").forEach(btn => {
@@ -1810,7 +1871,7 @@
     }
     guessScore.textContent = guessState.score;
     guessState.round++;
-    setTimeout(() => {
+    guessTimer = setTimeout(() => {
       if (guessState.round > guessState.totalRounds) endGuessGame();
       else nextGuessRound();
     }, 1500);
@@ -1989,10 +2050,8 @@
 
   // ============ ДОЛГИЙ ТАП / ДВОЙНОЙ КЛИК ПО АЧИВКЕ ============
   function toggleAchDesc(achEl) {
-    const descEl = achEl.querySelector(".ach-desc");
-    if (!descEl) return;
-    const isHidden = descEl.style.display === "none";
-    descEl.style.display = isHidden ? "block" : "none";
+    // Показываем/скрываем закрытую ачивку (снимаем блюр, описание читается)
+    achEl.classList.toggle("revealed");
     beep(600, 0.1);
     if (navigator.vibrate) navigator.vibrate(30);
   }
@@ -2062,13 +2121,14 @@
     function tryUnlock() {
       if (unlocked) return;
       audios.forEach(audio => {
-        audio.volume = 0;
+        // muted работает и на iOS (volume там игнорируется)
+        audio.muted = true;
         const p = audio.play();
         if (p && p.then) {
           p.then(() => {
-            audio.pause(); audio.currentTime = 0; audio.volume = 1;
-          }).catch(() => { audio.volume = 1; });
-        } else { audio.volume = 1; }
+            audio.pause(); audio.currentTime = 0; audio.muted = false;
+          }).catch(() => { audio.muted = false; });
+        } else { audio.muted = false; }
       });
       unlocked = true;
     }
